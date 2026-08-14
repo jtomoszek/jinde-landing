@@ -368,6 +368,11 @@ a{color:inherit}
 @media (min-width:768px){ .author-photo{width:7.5rem;height:7.5rem;margin-inline:0} }
 
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.625rem;margin-top:1.25rem}
+/* Mobil: jen první dva boxy — víc prostoru pro čísla */
+@media (max-width:767px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stats div:nth-child(3){display:none}
+}
 .stats div{
   background:rgba(65,177,122,.07);border:1px solid rgba(65,177,122,.18);
   border-radius:.875rem;padding:1rem .75rem;text-align:center;
@@ -858,7 +863,7 @@ a{color:inherit}
       <p class="eyebrow">Časté otázky</p>
       <h2 class="h2" id="faq-h">Na co se lidé ptají před kliknutím</h2>
 
-      <div class="faq narrow" style="margin-top:1.5rem">
+      <div class="faq" style="margin-top:1.5rem">
         <details>
           <summary>Kolik to stojí?</summary>
           <div class="answer">Nic. Video i vstup do Edu sekce jsou zdarma a nevyžadují platební údaje. Nejde o ukázku placeného kurzu se skrytým doplatkem.</div>
