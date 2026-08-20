@@ -187,6 +187,39 @@ a{color:inherit}
 .benefit strong{display:block;font-family:var(--font-head);font-size:.9375rem;font-weight:800;line-height:1.35}
 .benefit p{margin-top:.25rem;font-size:.875rem;line-height:1.55;color:var(--ink-60)}
 
+/* ---- partnerské balíčky ---- */
+.plans{display:grid;gap:.875rem;margin-top:1.75rem;align-items:stretch}
+@media (min-width:768px){ .plans{grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem} }
+.plan{
+  position:relative;display:flex;flex-direction:column;
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:1.5rem 1.375rem;box-shadow:var(--shadow-card);
+}
+.plan.featured{border-color:rgba(65,177,122,.55);box-shadow:0 24px 55px -18px rgba(65,177,122,.35)}
+.plan .flag{
+  position:absolute;top:-.8125rem;left:50%;transform:translateX(-50%);
+  white-space:nowrap;border-radius:999px;background:var(--mint);color:#fff;
+  font-family:var(--font-head);font-size:.6875rem;font-weight:800;
+  letter-spacing:.08em;text-transform:uppercase;padding:.3125rem .875rem;
+}
+.plan .name{
+  font-family:var(--font-head);font-size:1.125rem;font-weight:800;letter-spacing:-.01em;
+}
+.plan .for{margin-top:.125rem;font-size:.8125rem;color:var(--ink-45)}
+.plan .price{
+  margin-top:.875rem;font-family:var(--font-head);
+  font-size:clamp(1.5rem,3.4vw,1.875rem);font-weight:900;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+.plan .price small{font-size:.8125rem;font-weight:600;color:var(--ink-45);letter-spacing:0}
+.plan ul{margin-top:1rem;display:grid;gap:.5rem}
+.plan li{
+  display:flex;gap:.5rem;align-items:flex-start;
+  font-size:.875rem;line-height:1.5;color:var(--ink-70);
+}
+.plan li svg{flex:none;width:1rem;height:1rem;color:var(--mint);margin-top:.1875rem}
+.plan li.plus{font-weight:600;color:var(--indigo)}
+
 .steps{display:grid;gap:.875rem;margin-top:1.75rem;counter-reset:step}
 @media (min-width:768px){ .steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem} }
 .step{
@@ -266,8 +299,9 @@ a{color:inherit}
   <a href="#s3" aria-label="Snímek 3 — ukázka videa"></a>
   <a href="#s4" aria-label="Snímek 4 — strategická hodnota"></a>
   <a href="#s5" aria-label="Snímek 5 — výhody pro partnery"></a>
-  <a href="#s6" aria-label="Snímek 6 — jak spolupráce probíhá"></a>
-  <a href="#s7" aria-label="Snímek 7 — závěr"></a>
+  <a href="#s6" aria-label="Snímek 6 — partnerské balíčky"></a>
+  <a href="#s7" aria-label="Snímek 7 — jak spolupráce probíhá"></a>
+  <a href="#s8" aria-label="Snímek 8 — závěr"></a>
 </nav>
 
 <main>
@@ -378,7 +412,7 @@ a{color:inherit}
         <div class="benefit">
           <span class="emoji" aria-hidden="true">🚀</span>
           <div><strong>50% sleva na náborové nástroje</strong>
-            <p>Garance poloviční ceny po oficiálním spuštění recruitment části.</p></div>
+            <p>Garance poloviční ceny pro zakládající partnery po spuštění recruitment části.</p></div>
         </div>
         <div class="benefit">
           <span class="emoji" aria-hidden="true">💎</span>
@@ -404,11 +438,68 @@ a{color:inherit}
     </div>
   </section>
 
-  <!-- ===== 6 · JAK SPOLUPRÁCE PROBÍHÁ ===== -->
+  <!-- ===== 6 · PARTNERSKÉ BALÍČKY ===== -->
   <section class="slide" id="s6" aria-labelledby="s6-h">
     <div class="slide-inner">
+      <p class="eyebrow">Partnerské balíčky</p>
+      <h2 id="s6-h">Vyberte si, jak velkou stopu chcete zanechat</h2>
+
+      <div class="plans">
+        <article class="plan">
+          <p class="name">Parťák</p>
+          <p class="for">pro firmy, které chtějí být u toho</p>
+          <p class="price">10 000 Kč <small>· jednorázová podpora</small></p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Logo v sekci partnerů na stránkách Jinde</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Poděkování vaší firmě v Edu sekci</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Odznak „Podporujeme Jinde“ pro váš web a kariérní stránky</li>
+          </ul>
+        </article>
+
+        <article class="plan">
+          <p class="name">Průkopník</p>
+          <p class="for">pro firmy, které chtějí být vidět</p>
+          <p class="price">20 000 Kč <small>· jednorázová podpora</small></p>
+          <ul>
+            <li class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Vše z balíčku Parťák</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Váš brand u vybraného vzdělávacího okruhu v Edu sekci</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Prezentace značky na landing pages kampaní</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Přednostní přístup k recruitment modulu při startu</li>
+          </ul>
+        </article>
+
+        <article class="plan featured">
+          <p class="flag">Zakládající partner</p>
+          <p class="name">Vizionář</p>
+          <p class="for">pro firmy, které chtějí formovat platformu</p>
+          <p class="price">50 000 Kč <small>· jednorázová podpora</small></p>
+          <ul>
+            <li class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Vše z balíčku Průkopník</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Hlavní partner celého vzdělávacího okruhu — brand u videí</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Garance 50% slevy na náborové nástroje po spuštění</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Slovo při plánování obsahu a nových dovedností</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 7 · JAK SPOLUPRÁCE PROBÍHÁ ===== -->
+  <section class="slide" id="s7" aria-labelledby="s7-h">
+    <div class="slide-inner">
       <p class="eyebrow">Jak spolupráce probíhá</p>
-      <h2 id="s6-h">Tři kroky k partnerství</h2>
+      <h2 id="s7-h">Tři kroky k partnerství</h2>
 
       <div class="steps">
         <div class="step">
@@ -427,11 +518,11 @@ a{color:inherit}
     </div>
   </section>
 
-  <!-- ===== 7 · ZÁVĚR ===== -->
-  <section class="slide closing" id="s7" aria-labelledby="s7-h">
+  <!-- ===== 8 · ZÁVĚR ===== -->
+  <section class="slide closing" id="s8" aria-labelledby="s8-h">
     <div class="slide-inner">
       <p class="eyebrow">Vstupte do projektu už v jeho zárodku</p>
-      <h2 class="big" id="s7-h">Buďte u zrodu generace <span style="color:var(--mint)">lepších zaměstnanců</span>.</h2>
+      <h2 class="big" id="s8-h">Buďte u zrodu generace <span style="color:var(--mint)">lepších zaměstnanců</span>.</h2>
       <p class="lead">
         Místa pro zakládající partnery jsou v první fázi omezená, abych všem zaručila
         maximální péči a nejvyšší viditelnost jejich značky.
