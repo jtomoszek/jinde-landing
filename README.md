@@ -11,8 +11,13 @@ Přepracovaná verze stránky `https://dev.besthr.cz/l?name=Video1k1` podle doku
   Bez parametru nebo s neznámým názvem se zobrazí Video1k1.
   Texty všech variant jsou v JS objektu `PAGES` (H1, podnadpis, název videa,
   H2 sekce a 3 odrážky, CTA).
-- **`prehled.html`** — interní rozcestník pro prezentaci: 10 karet, každá otevře
-  příslušnou variantu. Má `noindex`, do produkce nepatří.
+- **`prehled.html`** — interní rozcestník pro prezentaci: karty všech stránek.
+  Má `noindex`, do produkce nepatří.
+- **`partneri.html`** — B2B prezentace „Nabídka pro zaměstnavatele" ve stylu
+  PowerPointu: 7 celoobrazovkových snímků, scroll-snap přeskakuje mezi snímky,
+  listovat jde i šipkami/mezerníkem. Prezentuje ji majitelka naživo — bez
+  formuláře a CTA. Video na snímku 3 se přehraje po doplnění URL do konstanty
+  `VIDEO_SRC` v souboru.
 - **`video-poster.jpg`** — statický náhled videa (na výšku).
 Vizuál (barvy, fonty, tvarosloví) je převzatý 1:1 z původní stránky.
 
