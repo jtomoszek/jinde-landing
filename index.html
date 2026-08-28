@@ -563,6 +563,27 @@ a{color:inherit}
 .embed{position:relative;width:100%;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;background:#000}
 .embed video,.embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 
+/* pozdrav od Jiny ve formuláři — na šířku; nahradí se 30s videem */
+.greet{
+  position:relative;margin-top:1rem;aspect-ratio:16/9;
+  border-radius:.75rem;overflow:hidden;background:#1F2344;
+}
+.greet img{width:100%;height:100%;object-fit:cover;object-position:center 32%}
+.greet figcaption{
+  position:absolute;left:0;right:0;bottom:0;
+  display:flex;gap:.625rem;align-items:center;
+  padding:.75rem .875rem .625rem;
+  background:linear-gradient(to top,rgba(15,18,40,.85),rgba(15,18,40,0));
+  color:#fff;font-size:.75rem;line-height:1.4;text-align:left;
+}
+.greet figcaption strong{font-weight:700}
+.greet-play{
+  flex:none;display:grid;place-items:center;
+  width:2rem;height:2rem;border-radius:50%;
+  background:rgba(255,255,255,.22);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.5);
+}
+.greet-play svg{width:.75rem;height:.75rem;margin-left:.125rem}
+
 .visually-hidden{
   position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
   overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
@@ -859,7 +880,7 @@ a{color:inherit}
           <div class="answer">
             <span data-email-note>—</span>
             Údaje nepředáváme třetím stranám k jejich vlastnímu marketingu.
-            Kompletní zásady ochrany osobních údajů ti pošleme spolu s odkazem na video.
+            Kompletní zásady ochrany osobních údajů najdeš v Edu sekci hned po registraci.
           </div>
         </details>
         <details>
@@ -879,7 +900,7 @@ a{color:inherit}
     <div class="wrap">
       <img src="https://dev.besthr.cz/jinde.png" alt="Jinde" width="153" height="38">
       <p>Jinde Edu — obsah pro hledání práce bez omáčky.</p>
-      <p style="font-size:.75rem">Zásady ochrany osobních údajů a informace o cookies ti pošleme spolu s odkazem na video.</p>
+      <p style="font-size:.75rem">Zásady ochrany osobních údajů a informace o cookies najdeš v Edu sekci hned po registraci.</p>
     </div>
   </footer>
 </div>
@@ -898,13 +919,25 @@ a{color:inherit}
         Dva kroky, které použiješ ještě dnes. Délka <span data-video-length>…</span> minut.
       </p>
       <div class="embed" style="margin-top:1rem" id="video-mount">
-        <!-- Vlož sem <video> nebo <iframe> s reálným videem. -->
+        <!-- TODO: nahradit reálným <video>/<iframe>; zatím statický náhled -->
+        <img src="video-poster.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 32%">
       </div>
     </div>
 
     <!-- varianta B: waitlist / e-mail -->
     <form id="modal-form" hidden novalidate>
       <p style="margin-top:.75rem;font-size:.875rem;line-height:1.6;color:var(--ink-60)" data-form-intro></p>
+
+      <!-- TODO: nahradit 30s videem na šířku — pozdrav Jiny, proč potřebujeme jméno a e-mail -->
+      <figure class="greet">
+        <img src="video-poster.jpg" alt="Jina Malecová — krátký video pozdrav">
+        <figcaption>
+          <span class="greet-play" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+          </span>
+          <span><strong>Pozdrav od Jiny</strong> · 30 s — proč potřebujeme tvoje jméno a e-mail</span>
+        </figcaption>
+      </figure>
 
       <div class="field">
         <label for="f-name">Jméno</label>
@@ -914,24 +947,24 @@ a{color:inherit}
         <label for="f-email">E-mail <span aria-hidden="true">*</span></label>
         <input id="f-email" name="email" type="email" required autocomplete="email"
                placeholder="tvuj@email.cz" aria-describedby="f-email-note">
-        <p id="f-email-note" class="form-note">Odkaz dorazí během chvíle. Zkontroluj i složku Hromadné.</p>
+        <p id="f-email-note" class="form-note">Pošleme ti na něj potvrzení registrace do Edu sekce.</p>
       </div>
 
       <label class="consent">
         <input type="checkbox" id="f-consent" name="consent" required>
-        <span>Souhlasím se zasláním odkazu a navazujících tipů. Odhlásit se můžu kdykoli jedním kliknutím.</span>
+        <span>Souhlasím s registrací do Jinde Edu a se zasíláním navazujících tipů. Odhlásit se můžu kdykoli jedním kliknutím.</span>
       </label>
 
       <button type="submit" class="cta on-mint">
         <span class="ico" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
         </span>
         <span class="label" data-cta-label>Poslat mi odkaz na video</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
       <p class="form-note">
-        Údaje zpracováváme podle zásad ochrany osobních údajů (pošleme ti je spolu s odkazem)
+        Údaje zpracováváme podle zásad ochrany osobních údajů (najdeš je v Edu sekci)
         a nepředáváme je třetím stranám k jejich marketingu.
       </p>
       <p class="form-status" id="form-status" hidden role="status" aria-live="polite"></p>
@@ -965,14 +998,16 @@ const CONFIG = {
       email: 'E-mail po tobě nechceme. Pokud se později přihlásíš do Edu sekce, použijeme ho jen k zasílání obsahu Jinde Edu.',
       formIntro: ''
     },
+    /* Režim „waitlist" = registrace do Edu sekce: po vyplnění jména a e-mailu
+       se video spustí rovnou na stránce, žádný odkaz e-mailem. */
     waitlist: {
-      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg>',
-      posterLabel: 'Získat přístup k videu e-mailem',
-      cta: 'Získat přístup k videu e-mailem',
-      microcopy: '<strong>Odkaz pošleme na e-mail</strong><span class="dot">•</span>{LEN} minut videa<span class="dot">•</span>Odhlásit se můžeš kdykoli',
-      access: 'Po vyplnění e-mailu ti během chvíle přijde odkaz na video. Odtud pokračuješ do Edu sekce — žádný další mezikrok.',
-      email: 'E-mail použijeme k odeslání odkazu na video a k zasílání obsahu Jinde Edu. Odhlásit se dá jedním kliknutím v každé zprávě.',
-      formIntro: 'Napiš e-mail a odkaz na video ti pošleme během chvíle. Zároveň tě zapíšeme do aktuální skupiny Jinde Edu.'
+      icon: '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>',
+      posterLabel: 'Registrovat se a pustit video',
+      cta: 'Registrovat se a pustit video',
+      microcopy: '<strong>Video se spustí hned po registraci</strong><span class="dot">•</span>{LEN} minut<span class="dot">•</span>Odhlásit se můžeš kdykoli',
+      access: 'Vyplníš jméno a e-mail — tím se registruješ do Edu sekce a video se ti spustí rovnou tady na stránce. Žádné čekání na odkaz.',
+      email: 'E-mailem se registruješ do Edu sekce. Přijde ti na něj potvrzení a přístup k dalšímu obsahu; odhlásit se dá jedním kliknutím v každé zprávě.',
+      formIntro: 'Jina ti ve 30 sekundách vysvětlí, proč potřebujeme jméno a e-mail. Po vyplnění se ti video spustí rovnou zde.'
     }
   }
 };
@@ -1265,28 +1300,32 @@ modalForm.addEventListener('submit', async e => {
   status.hidden = false;
 
   if (!email.value || !email.checkValidity()){
-    status.textContent = 'Zkontroluj prosím e-mailovou adresu — odkaz jinam poslat neumíme.';
+    status.textContent = 'Zkontroluj prosím e-mailovou adresu — bez ní tě nedokážeme zaregistrovat.';
     status.style.background = '#FEF2F2'; status.style.borderColor = '#FCA5A5';
     email.focus();
     return;
   }
   if (!consent.checked){
-    status.textContent = 'Bez souhlasu ti odkaz bohužel odeslat nemůžeme.';
+    status.textContent = 'Bez souhlasu tě bohužel nemůžeme zaregistrovat.';
     status.style.background = '#FEF2F2'; status.style.borderColor = '#FCA5A5';
     consent.focus();
     return;
   }
 
   status.style.background = ''; status.style.borderColor = '';
-  status.textContent = 'Odesíláme…';
+  status.textContent = 'Registrujeme…';
 
-  // TODO: napojit na skutečný endpoint (fetch POST). Do té doby jen lokální potvrzení.
+  // TODO: napojit na skutečný registrační endpoint (fetch POST). Do té doby jen lokální potvrzení.
   await new Promise(r => setTimeout(r, 500));
 
   track('form_submit', {mode: CONFIG.mode});
-  modalForm.querySelectorAll('.field, .consent, .cta').forEach(el => el.hidden = true);
-  status.innerHTML = '<strong>Hotovo.</strong> Odkaz na video posíláme na <em>' +
-    email.value.replace(/[<>&]/g,'') + '</em>. Když do pěti minut nedorazí, mrkni do složky Hromadné.';
+  /* registrace hotová → schovat formulář a rovnou spustit video */
+  modalForm.querySelectorAll('.greet, .field, .consent, .cta').forEach(el => el.hidden = true);
+  status.innerHTML = '<strong>Hotovo — jsi v Jinde Edu.</strong> Video se ti právě spouští.';
+  modalVideo.hidden = false;
+  const v = document.querySelector('#video-mount video');
+  if (v) v.play().catch(()=>{});
+  track('video_start', {source: 'registration'});
 });
 
 /* ---------- statistiky: čísla postupně nabíhají při scrollu do view ---------- */
