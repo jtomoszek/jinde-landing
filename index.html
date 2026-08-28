@@ -568,21 +568,23 @@ a{color:inherit}
   position:relative;margin-top:1rem;aspect-ratio:16/9;
   border-radius:.75rem;overflow:hidden;background:#1F2344;
 }
-.greet img{width:100%;height:100%;object-fit:cover;object-position:center 32%}
+.greet img{width:100%;height:100%;object-fit:cover;object-position:center 35%}
 .greet figcaption{
   position:absolute;left:0;right:0;bottom:0;
-  display:flex;gap:.625rem;align-items:center;
   padding:.75rem .875rem .625rem;
   background:linear-gradient(to top,rgba(15,18,40,.85),rgba(15,18,40,0));
-  color:#fff;font-size:.75rem;line-height:1.4;text-align:left;
+  color:#fff;font-size:.75rem;line-height:1.4;text-align:center;
 }
 .greet figcaption strong{font-weight:700}
+/* play přesně uprostřed „videa" */
 .greet-play{
-  flex:none;display:grid;place-items:center;
-  width:2rem;height:2rem;border-radius:50%;
-  background:rgba(255,255,255,.22);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.5);
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:grid;place-items:center;
+  width:3rem;height:3rem;border-radius:50%;
+  background:rgba(255,255,255,.22);backdrop-filter:blur(4px);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.55),0 6px 18px rgba(0,0,0,.3);
 }
-.greet-play svg{width:.75rem;height:.75rem;margin-left:.125rem}
+.greet-play svg{width:1.125rem;height:1.125rem;margin-left:.1875rem}
 
 .visually-hidden{
   position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
@@ -931,11 +933,11 @@ a{color:inherit}
       <!-- TODO: nahradit 30s videem na šířku — pozdrav Jiny, proč potřebujeme jméno a e-mail -->
       <figure class="greet">
         <img src="video-poster.jpg" alt="Jina Malecová — krátký video pozdrav">
+        <span class="greet-play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+        </span>
         <figcaption>
-          <span class="greet-play" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
-          </span>
-          <span><strong>Pozdrav od Jiny</strong> · 30 s — proč potřebujeme tvoje jméno a e-mail</span>
+          <strong>Pozdrav od Jiny</strong> · 30 s — proč potřebujeme tvoje jméno a e-mail
         </figcaption>
       </figure>
 
