@@ -332,7 +332,7 @@ a{color:inherit}
 .vp-progress i{
   position:absolute;left:0;top:0;bottom:0;width:22%;
   background:var(--mint);
-  animation:vp-run 720s linear infinite;   /* tempo ~12min videa */
+  animation:vp-run 180s linear infinite;   /* tempo ~3min videa */
 }
 @keyframes vp-run{from{width:4%}to{width:98%}}
 @media (prefers-reduced-motion:reduce){ .vp-progress i{animation:none;width:22%} }
@@ -867,7 +867,7 @@ a{color:inherit}
         </details>
         <details>
           <summary>Jak je video dlouhé?</summary>
-          <div class="answer"><span data-video-length>…</span> minut. Je rozdělené na část „jak se rozhoduje HR“ a část „dva kroky“, takže se dá pustit i na dvakrát.</div>
+          <div class="answer"><span data-video-length>… minut</span>. Je rozdělené na část „jak se rozhoduje HR“ a část „dva kroky“, takže se dá pustit i na dvakrát.</div>
         </details>
         <details>
           <summary>Jak se k videu dostanu?</summary>
@@ -918,7 +918,7 @@ a{color:inherit}
     <!-- varianta A: přímé přehrání -->
     <div id="modal-video" hidden>
       <p style="margin-top:.75rem;font-size:.875rem;color:var(--ink-60)">
-        Dva kroky, které použiješ ještě dnes. Délka <span data-video-length>…</span> minut.
+        Dva kroky, které použiješ ještě dnes. Délka <span data-video-length>… minut</span>.
       </p>
       <div class="embed" style="margin-top:1rem" id="video-mount">
         <!-- TODO: nahradit reálným <video>/<iframe>; zatím statický náhled -->
@@ -984,7 +984,7 @@ const CONFIG = {
      'waitlist' = po kliknutí se sbírá e-mail (CTA MUSÍ říkat, že jde o e-mail/waitlist) */
   mode: 'waitlist',
 
-  videoLengthMin: 12,                       // TODO: doplnit skutečnou délku videa
+  videoLengthMin: 3,                        // délka videa v minutách
 
   /* Pevný konec — nikdy se negeneruje z „teď + X“, aby se odpočet neresetoval. */
   deadlineISO: '2026-08-31T23:59:00+02:00', // TODO: doplnit skutečný termín
@@ -1027,16 +1027,16 @@ function track(event, params){
 /* ---------- naplnění copy podle režimu ---------- */
 const C = CONFIG.copy[CONFIG.mode];
 
+const LEN = CONFIG.videoLengthMin;
+const LEN_LABEL = LEN + ' ' + (LEN === 1 ? 'minuta' : LEN <= 4 ? 'minuty' : 'minut');
 document.querySelectorAll('[data-video-length]').forEach(el => {
-  el.textContent = el.textContent.includes('minut')
-    ? CONFIG.videoLengthMin + ' minut'
-    : String(CONFIG.videoLengthMin);
+  el.textContent = el.textContent.includes('minut') ? LEN_LABEL : String(LEN);
 });
 document.querySelectorAll('[data-cta-label]').forEach(el => { el.textContent = C.cta; });
 document.querySelectorAll('[data-cta-icon]').forEach(el => { el.innerHTML = C.icon; });
 document.querySelector('[data-cta="poster"]').setAttribute('aria-label', C.posterLabel);
 document.querySelectorAll('[data-cta-microcopy]').forEach(el => {
-  el.innerHTML = C.microcopy.replace('{LEN}', CONFIG.videoLengthMin);
+  el.innerHTML = C.microcopy.replace('{LEN} minut', LEN_LABEL).replace('{LEN}', LEN);
 });
 document.querySelectorAll('[data-access-note]').forEach(el => { el.textContent = C.access; });
 document.querySelectorAll('[data-email-note]').forEach(el => { el.textContent = C.email; });
