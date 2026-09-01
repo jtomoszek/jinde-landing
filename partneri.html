@@ -187,6 +187,43 @@ a{color:inherit}
 .benefit strong{display:block;font-family:var(--font-head);font-size:.9375rem;font-weight:800;line-height:1.35}
 .benefit p{margin-top:.25rem;font-size:.875rem;line-height:1.55;color:var(--ink-60)}
 
+/* ---- KPI / trakce ---- */
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-top:1.75rem}
+@media (min-width:768px){ .kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem} }
+.kpi{
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+  padding:1.125rem 1rem;text-align:center;
+}
+.kpi b{
+  display:block;font-family:var(--font-head);
+  font-size:clamp(1.5rem,4.2vw,2.25rem);font-weight:900;line-height:1.05;
+  letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--mint);
+}
+.kpi span{
+  display:block;margin-top:.4375rem;
+  font-size:.8125rem;line-height:1.35;color:var(--ink-60);
+}
+/* pruh s referencemi zakladatelky pod KPI */
+.creds{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem .625rem;
+  margin-top:1.125rem;
+}
+.creds li{
+  display:inline-flex;align-items:center;gap:.4375rem;
+  background:rgba(65,177,122,.08);border:1px solid rgba(65,177,122,.2);
+  border-radius:999px;padding:.4375rem .8125rem;
+  font-size:.8125rem;font-weight:600;color:var(--ink-70);
+}
+.creds b{font-family:var(--font-head);font-weight:800;color:var(--indigo)}
+
+/* viditelná značka nedoplněného čísla — brání prezentaci vymyšlených dat */
+.todo{
+  display:inline-block;margin-top:.375rem;
+  background:#FEF3C7;color:#92400E;border:1px solid #FCD34D;
+  border-radius:999px;padding:.125rem .4375rem;
+  font-size:.5625rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+}
+
 /* ---- partnerské balíčky ---- */
 .plans{display:grid;gap:.875rem;margin-top:1.75rem;align-items:stretch}
 @media (min-width:768px){ .plans{grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem} }
@@ -297,11 +334,12 @@ a{color:inherit}
   <a href="#s1" aria-label="Snímek 1 — úvod"></a>
   <a href="#s2" aria-label="Snímek 2 — vize"></a>
   <a href="#s3" aria-label="Snímek 3 — ukázka videa"></a>
-  <a href="#s4" aria-label="Snímek 4 — strategická hodnota"></a>
-  <a href="#s5" aria-label="Snímek 5 — výhody pro partnery"></a>
-  <a href="#s6" aria-label="Snímek 6 — partnerské balíčky"></a>
-  <a href="#s7" aria-label="Snímek 7 — jak spolupráce probíhá"></a>
-  <a href="#s8" aria-label="Snímek 8 — závěr"></a>
+  <a href="#s4" aria-label="Snímek 4 — kde jsme dnes"></a>
+  <a href="#s5" aria-label="Snímek 5 — strategická hodnota"></a>
+  <a href="#s6" aria-label="Snímek 6 — výhody pro partnery"></a>
+  <a href="#s7" aria-label="Snímek 7 — partnerské balíčky"></a>
+  <a href="#s8" aria-label="Snímek 8 — jak spolupráce probíhá"></a>
+  <a href="#s9" aria-label="Snímek 9 — závěr"></a>
 </nav>
 
 <main>
@@ -364,11 +402,50 @@ a{color:inherit}
     </div>
   </section>
 
-  <!-- ===== 4 · STRATEGICKÁ HODNOTA ===== -->
+  <!-- ===== 4 · KDE JSME DNES (trakce) ===== -->
   <section class="slide" id="s4" aria-labelledby="s4-h">
     <div class="slide-inner">
+      <p class="eyebrow">Kde jsme dnes</p>
+      <h2 id="s4-h">Nezačínáme od nuly. Publikum i obsah už žijí.</h2>
+      <p class="lead">
+        Do platformy, natáčení a kampaní jsme investovali vlastní prostředky i roky HR praxe.
+        Nehledáme peníze na rozjezd nápadu — hledáme partnery k projektu, který už běží
+        a má za sebou první měřitelné výsledky.
+      </p>
+
+      <div class="kpis">
+        <div class="kpi">
+          <b>5 000+</b>
+          <span>sledujících na Instagramu</span>
+        </div>
+        <div class="kpi">
+          <b data-fill>—</b>
+          <span>zhlédnutí vzdělávacího obsahu<span class="todo">doplnit</span></span>
+        </div>
+        <div class="kpi">
+          <b data-fill>—</b>
+          <span>investováno do platformy a obsahu<span class="todo">doplnit</span></span>
+        </div>
+        <div class="kpi">
+          <b data-fill>—</b>
+          <span>měsíců vývoje za projektem<span class="todo">doplnit</span></span>
+        </div>
+      </div>
+
+      <ul class="creds">
+        <li><b>12 let</b> HR praxe za projektem</li>
+        <li><b>3 000+</b> posouzených životopisů</li>
+        <li><b>1 200+</b> hodin kariérního poradenství</li>
+        <li>nábor od <b>dělnických pozic</b> po <b>vysoký management</b></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== 5 · STRATEGICKÁ HODNOTA ===== -->
+  <section class="slide" id="s5" aria-labelledby="s5-h">
+    <div class="slide-inner">
       <p class="eyebrow">Strategická hodnota</p>
-      <h2 id="s4-h">Zapomeňte na pasivní inzerci. Spojte se s lidmi v momentě jejich růstu.</h2>
+      <h2 id="s5-h">Zapomeňte na pasivní inzerci. Spojte se s lidmi v momentě jejich růstu.</h2>
       <p class="lead">
         Běžná inzerce oslovuje pasivní čtenáře. My propojujeme zaměstnavatele s kandidáty,
         kteří aktivně investují čas do vlastního rozvoje.
@@ -397,11 +474,11 @@ a{color:inherit}
     </div>
   </section>
 
-  <!-- ===== 5 · BENEFITY ===== -->
-  <section class="slide" id="s5" aria-labelledby="s5-h">
+  <!-- ===== 6 · BENEFITY ===== -->
+  <section class="slide" id="s6" aria-labelledby="s6-h">
     <div class="slide-inner">
       <p class="eyebrow">Co získáte jako partner</p>
-      <h2 id="s5-h">Výhody pro první vlnu partnerů</h2>
+      <h2 id="s6-h">Výhody pro první vlnu partnerů</h2>
 
       <div class="benefits">
         <div class="benefit">
@@ -438,17 +515,17 @@ a{color:inherit}
     </div>
   </section>
 
-  <!-- ===== 6 · PARTNERSKÉ BALÍČKY ===== -->
-  <section class="slide" id="s6" aria-labelledby="s6-h">
+  <!-- ===== 7 · PARTNERSKÉ BALÍČKY ===== -->
+  <section class="slide" id="s7" aria-labelledby="s7-h">
     <div class="slide-inner">
       <p class="eyebrow">Partnerské balíčky</p>
-      <h2 id="s6-h">Vyberte si, jak velkou stopu chcete zanechat</h2>
+      <h2 id="s7-h">Vyberte si, jak velkou stopu chcete zanechat</h2>
 
       <div class="plans">
         <article class="plan">
           <p class="name">Parťák</p>
           <p class="for">pro firmy, které chtějí být u toho</p>
-          <p class="price">10 000 Kč <small>· jednorázová podpora</small></p>
+          <p class="price">20 000 Kč <small>· jednorázová podpora</small></p>
           <ul>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               Logo v sekci partnerů na stránkách Jinde</li>
@@ -462,7 +539,7 @@ a{color:inherit}
         <article class="plan">
           <p class="name">Průkopník</p>
           <p class="for">pro firmy, které chtějí být vidět</p>
-          <p class="price">20 000 Kč <small>· jednorázová podpora</small></p>
+          <p class="price">40 000 Kč <small>· jednorázová podpora</small></p>
           <ul>
             <li class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               Vše z balíčku Parťák</li>
@@ -479,7 +556,7 @@ a{color:inherit}
           <p class="flag">Zakládající partner</p>
           <p class="name">Vizionář</p>
           <p class="for">pro firmy, které chtějí formovat platformu</p>
-          <p class="price">50 000 Kč <small>· jednorázová podpora</small></p>
+          <p class="price">70 000 Kč <small>· jednorázová podpora</small></p>
           <ul>
             <li class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               Vše z balíčku Průkopník</li>
@@ -495,11 +572,11 @@ a{color:inherit}
     </div>
   </section>
 
-  <!-- ===== 7 · JAK SPOLUPRÁCE PROBÍHÁ ===== -->
-  <section class="slide" id="s7" aria-labelledby="s7-h">
+  <!-- ===== 8 · JAK SPOLUPRÁCE PROBÍHÁ ===== -->
+  <section class="slide" id="s8" aria-labelledby="s8-h">
     <div class="slide-inner">
       <p class="eyebrow">Jak spolupráce probíhá</p>
-      <h2 id="s7-h">Tři kroky k partnerství</h2>
+      <h2 id="s8-h">Tři kroky k partnerství</h2>
 
       <div class="steps">
         <div class="step">
@@ -518,11 +595,11 @@ a{color:inherit}
     </div>
   </section>
 
-  <!-- ===== 8 · ZÁVĚR ===== -->
-  <section class="slide closing" id="s8" aria-labelledby="s8-h">
+  <!-- ===== 9 · ZÁVĚR ===== -->
+  <section class="slide closing" id="s9" aria-labelledby="s9-h">
     <div class="slide-inner">
       <p class="eyebrow">Vstupte do projektu už v jeho zárodku</p>
-      <h2 class="big" id="s8-h">Buďte u zrodu generace <span style="color:var(--mint)">lepších zaměstnanců</span>.</h2>
+      <h2 class="big" id="s9-h">Buďte u zrodu generace <span style="color:var(--mint)">lepších zaměstnanců</span>.</h2>
       <p class="lead">
         Místa pro zakládající partnery jsou v první fázi omezená, abych všem zaručila
         maximální péči a nejvyšší viditelnost jejich značky.
