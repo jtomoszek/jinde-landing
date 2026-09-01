@@ -367,12 +367,7 @@ a{color:inherit}
 }
 @media (min-width:768px){ .author-photo{width:7.5rem;height:7.5rem;margin-inline:0} }
 
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.625rem;margin-top:1.25rem}
-/* Mobil: jen první dva boxy — víc prostoru pro čísla */
-@media (max-width:767px){
-  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .stats div:nth-child(3){display:none}
-}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.625rem;margin-top:1.25rem;max-width:26rem}
 .stats div{
   background:rgba(65,177,122,.07);border:1px solid rgba(65,177,122,.18);
   border-radius:.875rem;padding:1rem .75rem;text-align:center;
@@ -385,13 +380,6 @@ a{color:inherit}
 }
 .stats span{display:block;margin-top:.375rem;font-size:.8125rem;line-height:1.35;color:var(--ink-60)}
 
-/* zdroj tvrzení */
-.source{
-  margin-top:1.25rem;padding:.875rem 1rem;
-  border-left:3px solid rgba(65,177,122,.5);
-  background:rgba(65,177,122,.06);border-radius:0 .75rem .75rem 0;
-  font-size:.8125rem;line-height:1.6;color:var(--ink-70);
-}
 
 /* ==========================================================================
    5) Důkazy / reference
@@ -717,22 +705,15 @@ a{color:inherit}
           </p>
           <p style="margin-top:.875rem;font-size:.9375rem;line-height:1.65;color:var(--ink-70)">
             Vybírá kandidáty na druhé straně stolu — takže video neukazuje, „co by se mohlo líbit”,
-            ale jak nábor probíhá ve skutečnosti. Všechno, co ve videu uslyšíš, vychází z její
-            každodenní práce s životopisy a pohovory.
+            ale jak nábor probíhá ve skutečnosti. Nabírá ve spektru THP i dělnických pozic,
+            stejně jako pozice vysokého managementu nebo specializované IT role. Všechno,
+            co ve videu uslyšíš, vychází z její každodenní práce s životopisy a pohovory.
           </p>
 
           <div class="stats">
             <div><b data-count="12">12</b><span>let v HR</span></div>
             <div><b data-count="3000" data-suffix="+">3000+</b><span>posouzených CV</span></div>
-            <div><b data-count="12">12</b><span>oborů náboru</span></div>
           </div>
-
-          <p class="source">
-            <strong>K tvrzení o rozsahu ghostingu:</strong>
-            <span id="stat-claim">Většina uchazečů se po odeslání životopisu nedočká žádné odpovědi.</span>
-            <span id="stat-source"><span class="todo">doplnit zdroj</span> — dokud nemáme dohledatelný zdroj,
-            uvádíme tvrzení nekvantifikovaně (bez čísla „9 z 10“).</span>
-          </p>
 
         </div>
       </div>
@@ -843,8 +824,8 @@ a{color:inherit}
     <section class="wrap section" aria-labelledby="cta2">
       <div class="cta-band">
         <h2 class="h2" id="cta2">Jeden večer práce může změnit, jak tvoje CV dopadne</h2>
-        <p class="lead" style="margin-top:.75rem;max-width:36rem;margin-inline:auto">
-          Pusť si video, udělej dva kroky a odešli další své CV, které zaujme.
+        <p class="lead" id="cta2-sub" style="margin-top:.75rem;max-width:36rem;margin-inline:auto">
+          Pusť si video, udělej dva kroky a odešli CV, které zaujme a pustí tě k druhému kolu pohovoru.
         </p>
         <button type="button" class="cta on-mint" data-cta="secondary">
           <span class="ico" aria-hidden="true" data-cta-icon></span>
@@ -875,7 +856,7 @@ a{color:inherit}
         </details>
         <details>
           <summary>Pro koho to je?</summary>
-          <div class="answer">Pro absolventy a lidi s krátkou praxí, kteří posílají přihlášky a nedostávají odpovědi. Není to obsah pro seniorní pozice ani pro změnu oboru po deseti letech praxe.</div>
+          <div class="answer" id="faq-audience">—</div>
         </details>
         <details>
           <summary>Co uděláte s mými údaji?</summary>
@@ -888,9 +869,9 @@ a{color:inherit}
         <details>
           <summary>Proč je přístup časově omezený?</summary>
           <div class="answer">
+            <strong>Počet míst omezený není</strong> — registrace je otevřená a video se ti spustí hned po vyplnění.
             <span id="faq-reason">—</span>
             Termín <strong><time id="deadline-date-3" datetime="">…</time></strong> je pevný, stejný pro všechny a po jeho uplynutí se neresetuje.
-            Video zůstává dostupné i potom — omezený je jen nástup do aktuální skupiny.
           </div>
         </details>
       </div>
@@ -901,7 +882,7 @@ a{color:inherit}
   <footer class="site-footer">
     <div class="wrap">
       <img src="https://dev.besthr.cz/jinde.png" alt="Jinde" width="153" height="38">
-      <p>Jinde Edu — obsah pro hledání práce bez omáčky.</p>
+      <p>Jinde Edu — praktický obsah o kariéře, náboru a pracovním trhu. Bez omáčky.</p>
       <p style="font-size:.75rem">Zásady ochrany osobních údajů a informace o cookies najdeš v Edu sekci hned po registraci.</p>
     </div>
   </footer>
@@ -987,8 +968,10 @@ const CONFIG = {
   videoLengthMin: 3,                        // délka videa v minutách
 
   /* Pevný konec — nikdy se negeneruje z „teď + X“, aby se odpočet neresetoval. */
-  deadlineISO: '2026-08-31T23:59:00+02:00', // TODO: doplnit skutečný termín
-  urgencyReason: 'skupinu otevíráme jednou měsíčně, aby stíhala odpovídat na dotazy.', // TODO: pravdivý důvod
+  deadlineISO: '2026-09-30T23:59:00+02:00', // TODO: doplnit skutečný termín (starý 31. 8. už uplynul)
+  /* TODO POTVRDIT S KLIENTKOU: co přesně datum označuje. Nesmí tvrdit omezenou kapacitu —
+     registrace je otevřená a video se spouští hned. */
+  urgencyReason: 'Datum označuje konec aktuálního běhu Edu sekce, do kterého tě zapisujeme.',
 
   copy: {
     video: {
@@ -1042,8 +1025,7 @@ document.querySelectorAll('[data-access-note]').forEach(el => { el.textContent =
 document.querySelectorAll('[data-email-note]').forEach(el => { el.textContent = C.email; });
 document.querySelectorAll('[data-form-intro]').forEach(el => { el.textContent = C.formIntro; });
 document.getElementById('modal-title').textContent = C.cta;
-document.getElementById('faq-reason').textContent =
-  CONFIG.urgencyReason.charAt(0).toUpperCase() + CONFIG.urgencyReason.slice(1);
+document.getElementById('faq-reason').textContent = CONFIG.urgencyReason;
 
 /* ==========================================================================
    10 variant landing page — texty z dokumentu klienta, výběr přes ?name=
@@ -1063,7 +1045,7 @@ const PAGES = {
     cta: 'Získat návod na CV, které HR nepřehlédne'
   },
   Video1k2: {
-    h1: 'Měníš obor? Přestaň posílat staré CV a získej pozvánku na nový pohovor.',
+    h1: 'Toužíš po změně svého oboru, ale pořád tě hážou do stejného pytle? Nauč se řeč HR a pochopíš, jak uspět.',
     sub: 'Náboráři nemají čas číst mezi řádky. Nauč se přeložit své dosavadní zkušenosti do řeči nového oboru.',
     video: '„Jak prodat zkušenosti z jiného oboru a získat šanci na pohovor“',
     boxH2: 'Zjisti, jak přepsat CV tak, aby personalista viděl tvůj přínos, ne chybějící praxi.',
@@ -1078,7 +1060,7 @@ const PAGES = {
     h1: 'Pauza v životopise není překážka. Zjisti, jak z ní udělat tvou přednost.',
     sub: 'Personalisté se pauzy nebojí – bojí se jen nejistoty. Ukaž jim, co v tobě skutečně je.',
     video: '„Jak v CV vysvětlit pauzu v kariéře a okamžitě zaujmout HR“',
-    boxH2: 'Ovládni způsob, jak v CV odprezentovat pauzu jako výhodu a získat pozvánku.',
+    boxH2: 'Ovládni způsob, jak v CV odprezentovat pauzu jako výhodu a získat pozvánku k pohovoru.',
     bullets: [
       'Co si HR myslí, když vidí mezeru v CV (a jak jejich obavy rozptýlit)',
       'Jak správně pojmenovat pauzu v CV, aby působila jako výhoda',
@@ -1114,9 +1096,9 @@ const PAGES = {
     h1: 'Pusť strach z pohovoru z hlavy. Připrav se za 1 den a odejdi s pracovní nabídkou.',
     sub: 'Nemusíš se šprtat web firmy nazpaměť. Stačí pochopit, na co se HR skutečně ptá a jak odpovídat.',
     video: '„Příprava na pohovor bez stresu: Jak oslnit HR za jediný večer“',
-    boxH2: 'Získej expresní návod, jak na pohovoru působit sebevědomě a připraveně.',
+    boxH2: 'Získej instantní návod, jak na pohovoru působit sebevědomě a připraveně.',
     bullets: [
-      'Co HR na pohovoru u absolventů doopravdy testuje (a co ignoruje)',
+      'Co HR na pohovoru u absolventů doopravdy testuje (a co tak nějak chápe)',
       'Jak odpovídat na chytáky a zákeřné otázky bez trémy a koktání',
       '2 otázky, kterými na konci pohovoru otočíš role a získáš si respekt'
     ],
@@ -1152,7 +1134,7 @@ const PAGES = {
     video: '„Jak si při změně oboru říct o fér plat a nedostat nálepku ‚drahý‘“',
     boxH2: 'Získej postup, jak si vyjednat odpovídající plat bez pocitu, že si vyskakuješ.',
     bullets: [
-      'Kde zjistit reálné platové rozmezí pro tvou novou pozici (bez hádání)',
+      'Kde zjistit reálné platové rozmezí pro tvou novou pozici (bez domněnek)',
       'Co se děje v hlavě HR, když vyslovíš svoje číslo (a jak reagovat na námitky)',
       '1 přesná věta, která přiměje firmu dorovnat tvou požadovanou částku'
     ],
@@ -1172,9 +1154,47 @@ const PAGES = {
   }
 };
 
+/* Odpověď na „Pro koho to je?" se řídí tématem stránky — na landing page o změně
+   oboru nesmí stát, že obsah pro změnu oboru není. */
+const AUDIENCES = {
+  absolventi: 'Pro absolventy a lidi s krátkou praxí, kteří posílají přihlášky a nedostávají odpovědi.',
+  obor: 'Pro lidi, kteří mění obor a potřebují svoje dosavadní zkušenosti přeložit do řeči toho nového — ať už mají za sebou dva roky praxe, nebo patnáct.',
+  pauza: 'Pro lidi, kteří se vracejí do práce po delší pauze — po rodičovské, nemoci, studiu nebo pobytu v zahraničí.'
+};
+
+/* Závěrečná sekce se liší podle tématu, ne jedna věta o CV na všech deseti stránkách. */
+const CLOSERS = {
+  cv: {
+    h2: 'Jeden večer práce může změnit, jak tvoje CV dopadne',
+    sub: 'Pusť si video, udělej dva kroky a odešli CV, které zaujme a pustí tě k druhému kolu pohovoru.'
+  },
+  pohovor: {
+    h2: 'Jeden večer přípravy může změnit, jak pohovor dopadne',
+    sub: 'Pusť si video, projdi si dva kroky a jdi na pohovor s klidem a s odpověďmi, které sedí.'
+  },
+  plat: {
+    h2: 'Jedna dobře připravená věta může změnit tvůj nástupní plat',
+    sub: 'Pusť si video, zjisti své reálné platové rozmezí a řekni si o částku, která odpovídá tvé hodnotě.'
+  }
+};
+
+const PAGE_META = {
+  Video1k1: {audience:'absolventi', closer:'cv'},
+  Video1k2: {audience:'obor',       closer:'cv'},
+  Video1k3: {audience:'pauza',      closer:'cv'},
+  Video3k1: {audience:'absolventi', closer:'cv'},
+  Video3k2: {audience:'obor',       closer:'cv'},
+  Video4k1: {audience:'absolventi', closer:'pohovor'},
+  Video4k2: {audience:'obor',       closer:'pohovor'},
+  Video4k3: {audience:'pauza',      closer:'pohovor'},
+  Video5k2: {audience:'obor',       closer:'plat'},
+  Video5k3: {audience:'pauza',      closer:'plat'}
+};
+
 (function applyPage(){
   const name = new URLSearchParams(location.search).get('name') || 'Video1k1';
   const P = PAGES[name] || PAGES.Video1k1;
+  const M = PAGE_META[name] || PAGE_META.Video1k1;
 
   document.title = P.h1 + ' | Jinde Edu';
 
@@ -1207,6 +1227,12 @@ const PAGES = {
      text ve formuláři zůstává popisem skutečného kroku (message match) */
   document.querySelectorAll('.hg-cta [data-cta-label], .cta-band [data-cta-label]')
     .forEach(el => { el.textContent = P.cta; });
+
+  document.getElementById('faq-audience').textContent = AUDIENCES[M.audience];
+
+  const closer = CLOSERS[M.closer];
+  document.getElementById('cta2').textContent = closer.h2;
+  document.getElementById('cta2-sub').textContent = closer.sub;
 })();
 
 /* ---------- odpočet: pevný termín, bez resetu při opakované návštěvě ---------- */
