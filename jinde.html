@@ -172,112 +172,53 @@ a{color:inherit}
 .phone.video .screen::after{background:rgba(255,255,255,.55)}
 
 /* ==========================================================================
-   Animovaný průchod lekcí — celé UI aplikace postavené v HTML, řízené
-   atributem data-step (0 osnova · 1 detail · 2 video · 3 otázka · 4 hotovo)
+   Tři mockupy „Jak Edu funguje" — statické, oživí se po najetí myší
+   (na dotyku, když vjedou do záběru): 1 scrolluje osnovu, 2 pustí video,
+   3 zodpoví otázku a spustí konfety.
    ========================================================================== */
-.phone.anim{--screen-bg:var(--seashell)}
 .phone.anim .screen{container-type:inline-size}
+
+/* 1 · osnova — dlouhý screenshot uvnitř telefonu, posouvá se dolů */
+.phone.p1{--screen-bg:#fff}
+.phone.p1 .viewport{position:absolute;left:0;right:0;top:2.1rem;bottom:0;overflow:hidden;background:var(--seashell)}
+.phone.p1 .viewport img{position:absolute;top:0;left:0;width:100%;height:auto;transform:translateY(0);transition:transform 1.2s ease-out;will-change:transform}
+
+/* 2 · video — poster, po najetí hraje bez zvuku */
+.phone.p2{--screen-bg:#000}
+.phone.p2 video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.phone.p2 .badge{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;
+  width:3.5rem;height:3.5rem;border-radius:50%;
+  background:rgba(255,255,255,.22);backdrop-filter:blur(4px);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.55),0 8px 24px rgba(0,0,0,.35);
+  display:grid;place-items:center;color:#fff;transition:opacity .3s ease;
+}
+.phone.p2 .badge svg{width:1.375rem;height:1.375rem;margin-left:.1875rem}
+.phone.p2 .mute{position:absolute;right:.75rem;bottom:.875rem;z-index:2;color:#fff;font-size:.6875rem;font-weight:700;background:rgba(0,0,0,.45);border-radius:999px;padding:.25rem .625rem;opacity:0;transition:opacity .3s ease}
+.phone.p2.playing .badge{opacity:0}
+.phone.p2.playing .mute{opacity:1}
+
+/* 3 · otázka — HTML modál nad ztlumeným záběrem */
 .app-ui{
   position:absolute;inset:0;overflow:hidden;
   font-family:var(--font-body);font-size:clamp(7px,4.15cqw,11px);line-height:1.35;color:var(--indigo);
-  transition:opacity .3s ease;
 }
-.app-ui.fade{opacity:0}
-.app-ui.reset *{transition:none!important;animation:none!important}
-.app-ui .scr{position:absolute;inset:0;transition:transform .5s cubic-bezier(.2,.7,.2,1),opacity .45s ease,filter .45s ease}
+.app-ui .scr{position:absolute;inset:0}
 .app-ui h4{font-family:var(--font-head);font-weight:800;letter-spacing:-.01em;margin:0}
-
-/* hlavička aplikace */
-.a-hdr{display:flex;align-items:center;justify-content:space-between;padding:2.2rem 1.4em .9em;background:#fff;border-bottom:1px solid var(--line)}
-.a-hdr img{height:2.1em;width:auto}
-.burger{display:grid;gap:.32em;width:1.7em}.burger i{display:block;height:.18em;background:var(--indigo);border-radius:1em}
-.a-body{padding:1.1em 1.3em 3em}
 .a-lbl{display:block;font-family:var(--font-head);font-size:.72em;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--mint)}
-
-/* osnova */
-.scr-list{background:var(--seashell)}
-.a-sit{border:1.5px solid rgba(65,177,122,.45);border-radius:1.1em;padding:.9em 1em;background:linear-gradient(100deg,rgba(65,177,122,.1),rgba(255,255,255,.9))}
-.a-chips{display:flex;gap:.45em;margin-top:.55em;overflow:hidden;white-space:nowrap}
-.a-chips span{flex:none;border:1px solid var(--line);background:#fff;border-radius:99em;padding:.38em .85em;font-size:.86em;font-weight:600}
-.a-chips span.on{background:var(--mint);border-color:var(--mint);color:#fff}
-.a-tabs{display:flex;gap:1.6em;margin:1em 0 .2em;font-size:.9em;font-weight:600;color:var(--ink-45)}
-.a-tabs span{padding-bottom:.4em;border-bottom:2px solid transparent}
-.a-tabs span.on{color:var(--indigo);border-color:var(--indigo)}
-.scr-list h4{font-size:1.5em;text-align:center;margin-top:.9em}
-.scr-list .a-sub{text-align:center;font-size:.8em;color:var(--ink-60);margin:.3em .2em .9em}
-.a-card{position:relative;background:#fff;border-radius:1.2em;padding:1em 1em .5em;box-shadow:0 .5em 1.6em -.8em rgba(15,23,42,.25);margin-bottom:.8em}
-.a-row{display:flex;gap:.7em;align-items:flex-start}
-.a-ico{flex:none;width:2.2em;height:2.2em;border-radius:.6em;background:rgba(31,35,68,.05);display:grid;place-items:center;color:var(--indigo)}
-.a-ico svg{width:1.2em;height:1.2em}
-.a-row b{display:block;font-family:var(--font-head);font-size:1.02em;font-weight:800;line-height:1.25}
-.a-bar{height:.45em;width:6em;border-radius:1em;background:rgba(31,35,68,.1);margin-top:.5em;overflow:hidden;display:inline-block;vertical-align:middle}
-.a-bar i{display:block;height:100%;width:0;background:var(--mint);border-radius:1em;transition:width .6s ease}
-.a-cnt{font-size:.72em;color:var(--ink-45);margin-left:.5em;vertical-align:middle}
-.a-cnt .n1{display:none}
-.a-done{display:inline-block;margin:.7em 0 0 2.9em;padding:.35em .8em;border-radius:.6em;background:rgba(65,177,122,.12);color:var(--mint-dark);font-weight:700;font-size:.82em;opacity:0;transform:scale(.8);transition:opacity .35s ease,transform .35s ease}
-.a-item{display:flex;align-items:center;gap:.7em;margin-top:.7em;padding:.85em .8em;border-radius:.9em;background:rgba(31,35,68,.03);transition:background .3s ease}
-.a-chk{flex:none;width:1.7em;height:1.7em;border-radius:50%;border:1.5px solid rgba(31,35,68,.2);background:#fff;display:grid;place-items:center;color:#fff;transition:background .35s ease,border-color .35s ease}
-.a-chk svg{width:.95em;height:.95em;opacity:0;transform:scale(.4);transition:opacity .3s ease .1s,transform .3s ease .1s}
-.a-txt{flex:1;font-size:.86em;font-weight:600;line-height:1.3}
-.a-xp{font-size:.75em;font-weight:700;color:var(--mint)}
-.a-lvl{position:absolute;right:1.1em;bottom:1.1em;width:3.6em;height:3.6em;border-radius:50%;background:var(--indigo);color:#fff;display:grid;place-items:center;line-height:1;box-shadow:0 .5em 1.2em -.5em rgba(31,35,68,.6);transition:transform .3s ease}
-.a-lvl b{font-family:var(--font-head);font-size:1.25em}.a-lvl span{font-size:.55em;letter-spacing:.1em;margin-top:.15em}
-
-/* hotovo */
-.app-ui[data-done] .lesson .a-bar i{width:100%}
-.app-ui[data-done] .lesson .n0{display:none}.app-ui[data-done] .lesson .n1{display:inline}
-.app-ui[data-done] .a-done{opacity:1;transform:scale(1)}
-.app-ui[data-done] .lesson .a-item{background:rgba(65,177,122,.08)}
-.app-ui[data-done] .lesson .a-chk{background:var(--mint);border-color:var(--mint)}
-.app-ui[data-done] .lesson .a-chk svg{opacity:1;transform:scale(1)}
-.app-ui[data-done] .lesson .a-txt{color:var(--ink-45);text-decoration:line-through}
-.app-ui[data-done] .a-lvl{transform:scale(1.12)}
-
-/* detail lekce */
-.scr-detail{background:var(--seashell);transform:translateX(100%)}
-.a-back{display:block;font-size:.9em;color:var(--ink-60);margin-bottom:.9em}
-.a-vbox{position:relative;aspect-ratio:16/10;border-radius:1.1em;overflow:hidden;background:#000;display:grid;place-items:center}
-.a-vbox img{width:100%;height:100%;object-fit:cover;object-position:center 28%}
-.a-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:3em;height:3em;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center;color:var(--indigo);box-shadow:0 .4em 1.2em rgba(0,0,0,.35)}
-.a-play svg{width:1.3em;height:1.3em;margin-left:.15em}
-.scr-detail h4{font-size:1.35em;margin-top:1em;line-height:1.2}
-.a-tags{display:flex;flex-wrap:wrap;gap:.4em;margin-top:.8em}
-.a-tags span{font-size:.72em;font-weight:600;padding:.4em .8em;border-radius:99em;background:rgba(31,35,68,.06);color:var(--ink-70)}
-.a-tags span.hi{background:rgba(65,177,122,.15);color:var(--mint-dark)}
-.a-meta{font-size:.8em;color:var(--ink-45);margin-top:.9em}
-.a-desc{font-size:.86em;line-height:1.45;margin-top:.6em;color:var(--ink-70)}
-
-/* přehrávání */
-.scr-play{background:#000;opacity:0}
-.scr-play img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1)}
-.a-prog{position:absolute;left:1.2em;right:1.2em;bottom:1.6em;color:#fff;font-size:.78em;font-weight:600}
-.a-track{height:.45em;border-radius:1em;background:rgba(255,255,255,.3);overflow:hidden;margin-bottom:.5em}
-.a-track i{display:block;height:100%;width:0;background:var(--mint);border-radius:1em}
-.a-prog .t1{float:right}
-
-/* otázka */
-.scr-quiz{background:rgba(31,35,68,.55);display:grid;align-items:end;padding:1em;opacity:0}
-.a-modal{background:#fff;border-radius:1.4em;padding:1.4em 1.3em 1.1em;transform:translateY(110%);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.scr-play{background:#000}
+.scr-play img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.45)}
+.scr-quiz{background:rgba(31,35,68,.35);display:grid;align-items:end;padding:1em}
+.a-modal{background:#fff;border-radius:1.4em;padding:1.4em 1.3em 1.1em}
 .a-mhead{display:flex;justify-content:space-between;align-items:center}
 .a-x{color:var(--ink-45);font-size:1em}
 .scr-quiz h4{font-size:1.4em;line-height:1.2;margin-top:.35em}
 .scr-quiz .a-sub{font-size:.85em;color:var(--ink-60);margin-top:.4em}
 .a-opt{margin-top:.75em;padding:.85em .9em;border-radius:.9em;border:1.5px solid var(--line);background:rgba(31,35,68,.03);font-size:.86em;font-weight:600;line-height:1.35;transition:background .3s ease,border-color .3s ease}
-.a-btn{margin-top:1.1em;padding:.95em;border-radius:99em;background:var(--indigo);color:#fff;text-align:center;font-family:var(--font-head);font-weight:800;font-size:.95em;transition:transform .15s ease}
+.a-btn{margin-top:1.1em;padding:.95em;border-radius:99em;background:var(--indigo);color:#fff;text-align:center;font-family:var(--font-head);font-weight:800;font-size:.95em}
 .a-link{text-align:center;font-size:.85em;color:var(--ink-45);margin-top:.7em}
-
-/* --- stavy kroků --- */
-.app-ui[data-step="1"] .scr-list,.app-ui[data-step="2"] .scr-list,.app-ui[data-step="3"] .scr-list{transform:translateX(-22%);opacity:0}
-.app-ui[data-step="1"] .scr-detail,.app-ui[data-step="2"] .scr-detail,.app-ui[data-step="3"] .scr-detail{transform:translateX(0)}
-.app-ui[data-step="2"] .scr-play,.app-ui[data-step="3"] .scr-play{opacity:1}
-.app-ui[data-step="2"] .scr-play img{animation:kenburns 2.6s ease-out forwards}
-@keyframes kenburns{to{transform:scale(1.06)}}
-.app-ui[data-step="2"] .a-track i{transition:width 2.4s linear .2s;width:100%}
-.app-ui[data-step="3"] .scr-play{filter:brightness(.45)}
-.app-ui[data-step="3"] .scr-quiz{opacity:1}
-.app-ui[data-step="3"] .a-modal{transform:translateY(0)}
-.app-ui[data-step="3"] .a-opt.pick{transition-delay:.9s;border-color:var(--mint);background:rgba(65,177,122,.12)}
-.app-ui[data-step="3"] .a-btn{animation:press .25s ease 2s}
+.app-ui.active .a-opt.pick{transition-delay:.25s;border-color:var(--mint);background:rgba(65,177,122,.12)}
+.app-ui.active .a-btn{animation:press .25s ease 1.05s}
 @keyframes press{50%{transform:scale(.96)}}
 
 /* prst — kroužek, který „klepne" na místo dané proměnnými --tx/--ty */
@@ -757,68 +698,34 @@ a{color:inherit}
 
       <div class="how">
         <div class="how-item">
-          <!-- animovaný průchod jednou lekcí: osnova → detail → video → otázka → hotovo + konfety -->
-          <div class="phone anim" id="demo-phone" role="img" aria-label="Ukázka průchodu lekcí v Jinde Edu: výběr situace, přehrání videa, kontrolní otázka, dokončená lekce">
+          <div class="phone p1" id="p-osnova" role="img" aria-label="Obrazovka Jinde Edu: učební osnova podle zvolené situace">
             <div class="screen">
-              <div class="app-ui" data-step="0" aria-hidden="true">
+              <div class="viewport"><img src="media/app-osnova-full.jpg" alt="" width="590" height="4206"></div>
+            </div>
+          </div>
+          <span class="k" aria-hidden="true">1</span>
+          <h3>Vyber svou situaci</h3>
+          <p>Osnova se poskládá podle toho, kde právě jsi. Vidíš přesně, co tě čeká a co už máš hotové.</p>
+        </div>
 
-                <!-- 1 · učební osnova -->
-                <section class="scr scr-list">
-                  <div class="a-hdr"><img src="https://dev.besthr.cz/jinde.png" alt=""><span class="burger"><i></i><i></i><i></i></span></div>
-                  <div class="a-body">
-                    <div class="a-sit">
-                      <span class="a-lbl">Tvoje situace</span>
-                      <div class="a-chips"><span class="on">Student</span><span>Měním práci v oboru</span><span>Měním práci v&nbsp;jiném</span></div>
-                    </div>
-                    <div class="a-tabs"><span class="on">Učební osnova</span><span>Videa</span></div>
-                    <h4>Učební osnova</h4>
-                    <p class="a-sub">Otevři obsah a sleduj ho. Check se zapne automaticky po zhlédnutí 80 %.</p>
+        <div class="how-item">
+          <div class="phone p2" id="p-video" role="img" aria-label="Obrazovka Jinde Edu: přehrávání krátkého videa">
+            <div class="screen">
+              <video src="media/edu-2.mp4" poster="media/edu-2.jpg" muted loop playsinline preload="metadata"></video>
+              <span class="badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg></span>
+              <span class="mute" aria-hidden="true">bez zvuku</span>
+            </div>
+          </div>
+          <span class="k" aria-hidden="true">2</span>
+          <h3>Pusť si krátké video z praxe</h3>
+          <p>Tři až pět minut, jedna myšlenka. K většině témat i checklist nebo PDF, které si rovnou použiješ.</p>
+        </div>
 
-                    <div class="a-card lesson">
-                      <div class="a-row">
-                        <span class="a-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
-                        <div><b>Jak na úspěšný start v nové práci?</b>
-                          <div class="a-bar"><i></i></div><span class="a-cnt"><span class="n0">0</span><span class="n1">1</span> z 1</span></div>
-                      </div>
-                      <span class="a-done">✓ Dokončeno</span>
-                      <div class="a-item">
-                        <span class="a-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-                        <span class="a-txt">Plán prvních 90 dní v nové práci | UNIVERZÁLNÍ</span>
-                        <span class="a-xp">+30 XP</span>
-                      </div>
-                    </div>
-
-                    <div class="a-card">
-                      <div class="a-row">
-                        <span class="a-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
-                        <div><b>Jak prezentovat svou profesní hodnotu?</b><div class="a-bar"><i style="width:0"></i></div><span class="a-cnt">0 z 1</span></div>
-                      </div>
-                      <div class="a-item"><span class="a-chk"></span><span class="a-txt">Moje profesní hodnota | Student</span><span class="a-xp">+30 XP</span></div>
-                    </div>
-                  </div>
-                  <div class="a-lvl"><b>0</b><span>LVL</span></div>
-                </section>
-
-                <!-- 2 · detail lekce -->
-                <section class="scr scr-detail">
-                  <div class="a-hdr"><img src="https://dev.besthr.cz/jinde.png" alt=""><span class="burger"><i></i><i></i><i></i></span></div>
-                  <div class="a-body">
-                    <span class="a-back">← Zpět do feedu</span>
-                    <div class="a-vbox"><img src="media/lesson-video.jpg" alt=""><span class="a-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg></span></div>
-                    <h4>Plán prvních 90 dní v nové práci | UNIVERZÁLNÍ</h4>
-                    <div class="a-tags"><span class="hi">Sdílet kamarádovi</span><span>Vracím se po pauze</span><span>Hledám práci po 50+</span><span>Student</span></div>
-                    <p class="a-meta">▶ 3 přehrání</p>
-                    <p class="a-desc">Většina lidí si plán prvních 90 dní začne dělat až první týden v práci — tedy ve chvíli, kdy už je pozdě ho promyslet klidně.</p>
-                  </div>
-                </section>
-
-                <!-- 3 · přehrávání -->
-                <section class="scr scr-play">
-                  <img src="media/lesson-video.jpg" alt="">
-                  <div class="a-prog"><div class="a-track"><i></i></div><span class="t0">0:00</span><span class="t1">3:58</span></div>
-                </section>
-
-                <!-- 4 · otázka -->
+        <div class="how-item">
+          <div class="phone anim p3" id="p-quiz" role="img" aria-label="Obrazovka Jinde Edu: kontrolní otázka po zhlédnutí videa">
+            <div class="screen">
+              <div class="app-ui" aria-hidden="true">
+                <section class="scr scr-play"><img src="media/lesson-video.jpg" alt="" loading="lazy"></section>
                 <section class="scr scr-quiz">
                   <div class="a-modal">
                     <div class="a-mhead"><span class="a-lbl">Jedna otázka</span><span class="a-x">✕</span></div>
@@ -831,28 +738,11 @@ a{color:inherit}
                     <div class="a-link">Odejít bez bodů</div>
                   </div>
                 </section>
-
                 <span class="tap"></span>
                 <div class="confetti"></div>
                 <div class="xp">+30 XP</div>
               </div>
             </div>
-          </div>
-          <span class="k" aria-hidden="true">1</span>
-          <h3>Vyber situaci a projdi lekci</h3>
-          <p>Osnova se poskládá podle toho, kde právě jsi. Pustíš video, odpovíš na jednu otázku — a lekce je hotová, i s body navíc.</p>
-        </div>
-        <div class="how-item">
-          <div class="phone anim static" data-show="1" role="img" aria-label="Obrazovka Jinde Edu: detail lekce s videem">
-            <div class="screen"></div>
-          </div>
-          <span class="k" aria-hidden="true">2</span>
-          <h3>Pusť si krátké video z praxe</h3>
-          <p>Tři až pět minut, jedna myšlenka. K většině témat i checklist nebo PDF, které si rovnou použiješ.</p>
-        </div>
-        <div class="how-item">
-          <div class="phone anim static" data-show="3" role="img" aria-label="Obrazovka Jinde Edu: kontrolní otázka po zhlédnutí videa">
-            <div class="screen"></div>
           </div>
           <span class="k" aria-hidden="true">3</span>
           <h3>Ověř si, že to sedí — a sbírej body</h3>
@@ -1050,86 +940,80 @@ lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
 addEventListener('keydown', e => { if (e.key === 'Escape' && !lb.hidden) closeLightbox(); });
 lbv.addEventListener('ended', closeLightbox);
 
-/* ---------- animovaný průchod lekcí v prvním mockupu ---------- */
+/* ---------- tři mockupy: oživení po najetí myší (na dotyku při vjezdu do záběru) ---------- */
 (function(){
-  const ph = document.getElementById('demo-phone'); if (!ph) return;
-  const ui = ph.querySelector('.app-ui'), tap = ui.querySelector('.tap');
-  const conf = ph.querySelector('.confetti'), xp = ph.querySelector('.xp');
-  /* krok: délka, klepnutí prstem [x %, y %, zpoždění ms] */
-  const STEPS = [
-    {dur:2000, taps:[[34,61,1100]]},          /* osnova → klepnutí na lekci */
-    {dur:1900, taps:[[50,31,1000]]},          /* detail → play */
-    {dur:3000, taps:[]},                      /* video běží */
-    {dur:3000, taps:[[50,62,800],[50,91,1950]]}, /* otázka → odpověď → potvrdit */
-    {dur:3400, taps:[]}                       /* hotovo + konfety */
-  ];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let i = 0, timers = [], running = false, inView = false;
+  const hoverable = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const demos = [];
 
-  function doTap(x, y){
-    tap.style.setProperty('--tx', x + '%'); tap.style.setProperty('--ty', y + '%');
-    tap.classList.remove('go'); void tap.offsetWidth; tap.classList.add('go');
-  }
-  function show(n){
-    ui.dataset.step = n;
-    if (n === 4) ui.setAttribute('data-done', '');
-    STEPS[n].taps.forEach(([x, y, d]) => timers.push(setTimeout(() => doTap(x, y), d)));
-  }
-  function resetUI(){
-    ui.classList.add('fade');
-    timers.push(setTimeout(() => {
-      ui.classList.add('reset'); ui.removeAttribute('data-done'); ui.dataset.step = 0;
-      conf.innerHTML = ''; xp.classList.remove('pop');
-      void ui.offsetWidth; ui.classList.remove('reset'); ui.classList.remove('fade');
-    }, 320));
+  /* 1 · osnova se posune dolů a po odjetí zpět nahoru */
+  const p1 = document.getElementById('p-osnova');
+  if (p1){
+    const vp = p1.querySelector('.viewport'), img = vp.querySelector('img');
+    demos.push({el:p1,
+      on(){ const d = img.offsetHeight - vp.clientHeight; if (d <= 0) return;
+            img.style.transitionDuration = Math.max(4, d / 110).toFixed(1) + 's'; img.style.transitionTimingFunction = 'linear';
+            img.style.transform = `translateY(-${d}px)`; },
+      off(){ img.style.transitionDuration = '1.2s'; img.style.transitionTimingFunction = 'ease-out'; img.style.transform = 'translateY(0)'; }
+    });
   }
 
-  function burst(){
-    const h = ph.querySelector('.screen').clientHeight;
-    const colors = ['#41B17A','#1F2344','#F9C74F','#F28482','#7FE0B0','#ffffff'];
-    conf.innerHTML = '';
-    for (let k = 0; k < 48; k++){
-      const s = document.createElement('i');
-      s.style.left = Math.random()*100 + '%';
-      s.style.width = (4 + Math.random()*6) + 'px';
-      s.style.height = (8 + Math.random()*8) + 'px';
-      s.style.background = colors[k % colors.length];
-      s.style.setProperty('--x', (Math.random()*70 - 35) + 'px');
-      s.style.setProperty('--y', (h + 30) + 'px');
-      s.style.setProperty('--r', (Math.random()*720 - 360) + 'deg');
-      s.style.setProperty('--d', (1.5 + Math.random()*1.3) + 's');
-      s.style.setProperty('--delay', (Math.random()*.55) + 's');
-      conf.appendChild(s);
+  /* 2 · video hraje bez zvuku, po odjetí se vrátí na začátek */
+  const p2 = document.getElementById('p-video');
+  if (p2){
+    const v = p2.querySelector('video');
+    demos.push({el:p2,
+      on(){ p2.classList.add('playing'); v.play().catch(()=>{}); },
+      off(){ v.pause(); v.currentTime = 0; p2.classList.remove('playing'); }
+    });
+  }
+
+  /* 3 · označí správnou odpověď, stiskne tlačítko, spustí konfety */
+  const p3 = document.getElementById('p-quiz');
+  if (p3){
+    const ui = p3.querySelector('.app-ui'), tap = ui.querySelector('.tap'),
+          conf = ui.querySelector('.confetti'), xp = ui.querySelector('.xp');
+    let timers = [];
+    const doTap = (x, y) => { tap.style.setProperty('--tx', x + '%'); tap.style.setProperty('--ty', y + '%');
+                              tap.classList.remove('go'); void tap.offsetWidth; tap.classList.add('go'); };
+    const burst = () => {
+      const h = p3.querySelector('.screen').clientHeight;
+      const colors = ['#41B17A','#1F2344','#F9C74F','#F28482','#7FE0B0','#ffffff'];
+      conf.innerHTML = '';
+      for (let k = 0; k < 48; k++){
+        const s = document.createElement('i');
+        s.style.left = Math.random()*100 + '%';
+        s.style.width = (4 + Math.random()*6) + 'px'; s.style.height = (8 + Math.random()*8) + 'px';
+        s.style.background = colors[k % colors.length];
+        s.style.setProperty('--x', (Math.random()*70 - 35) + 'px');
+        s.style.setProperty('--y', (h + 30) + 'px');
+        s.style.setProperty('--r', (Math.random()*720 - 360) + 'deg');
+        s.style.setProperty('--d', (1.5 + Math.random()*1.3) + 's');
+        s.style.setProperty('--delay', (Math.random()*.55) + 's');
+        conf.appendChild(s);
+      }
+      xp.classList.remove('pop'); void xp.offsetWidth; xp.classList.add('pop');
+    };
+    demos.push({el:p3,
+      on(){ ui.classList.add('active');
+            timers.push(setTimeout(() => doTap(50, 62), 150));
+            timers.push(setTimeout(() => doTap(50, 91), 1000));
+            timers.push(setTimeout(burst, 1350)); },
+      off(){ timers.forEach(clearTimeout); timers = [];
+             ui.classList.remove('active'); conf.innerHTML = ''; xp.classList.remove('pop'); }
+    });
+    p3.__on = () => demos[demos.length-1].on();   /* háček pro testování */
+  }
+
+  if (reduce) return;
+  demos.forEach(d => {
+    if (hoverable){
+      d.el.addEventListener('mouseenter', d.on);
+      d.el.addEventListener('mouseleave', d.off);
+    } else if ('IntersectionObserver' in window){
+      new IntersectionObserver(([e]) => e.isIntersecting ? d.on() : d.off(), {threshold:.6}).observe(d.el);
     }
-    xp.classList.remove('pop'); void xp.offsetWidth; xp.classList.add('pop');
-  }
-  function step(){
-    show(i);
-    if (i === 4) timers.push(setTimeout(burst, 350));
-    timers.push(setTimeout(() => {
-      if (i === 4){ resetUI(); i = 0; timers.push(setTimeout(step, 380)); }
-      else { i++; step(); }
-    }, STEPS[i].dur));
-  }
-  function clear(){ timers.forEach(clearTimeout); timers = []; }
-  function start(){ if (running || reduce) return; running = true; i = 0; step(); }
-  function stop(){ running = false; clear(); conf.innerHTML = ''; xp.classList.remove('pop'); }
-
-  /* statické mockupy 2 a 3 = klon stejného UI zastavený v daném kroku */
-  document.querySelectorAll('.phone.static[data-show]').forEach(p => {
-    const c = ui.cloneNode(true);
-    c.classList.add('reset'); c.dataset.step = p.dataset.show;
-    if (p.dataset.show === '4') c.setAttribute('data-done', '');
-    c.querySelectorAll('.tap,.confetti,.xp').forEach(e => e.remove());
-    p.querySelector('.screen').appendChild(c);
   });
-
-  if (reduce){ ui.dataset.step = 4; ui.setAttribute('data-done',''); return; }   /* bez animací: rovnou hotová lekce */
-  ph.__start = start; ph.__stop = stop;             /* háčky pro testování */
-  if ('IntersectionObserver' in window){
-    new IntersectionObserver(([e]) => { inView = e.isIntersecting; inView ? start() : stop(); }, {threshold:.4}).observe(ph);
-  } else { inView = true; start(); }
-  document.addEventListener('visibilitychange', () => document.hidden ? stop() : (inView && start()));
 })();
 
 /* šipky pásu (desktop) — posun o jednu kartu; stav podle pozice scrollu */
