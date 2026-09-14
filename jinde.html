@@ -431,8 +431,17 @@ a{color:inherit}
 .panel{padding:1.5rem}
 @media (min-width:640px){ .panel{padding:2rem} }
 .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
-.chips li{border-radius:999px;border:1px solid var(--line);background:rgba(31,35,68,.03);padding:.5rem .9375rem;font-size:.875rem;font-weight:600;color:var(--ink-70)}
-.chips li.on{background:var(--mint);border-color:var(--mint);color:#fff}
+.chip{
+  border-radius:999px;border:1px solid var(--line);background:rgba(31,35,68,.03);
+  padding:.5rem .9375rem;min-height:2.5rem;font-family:inherit;font-size:.875rem;font-weight:600;color:var(--ink-70);
+  cursor:pointer;transition:background-color .2s ease,border-color .2s ease,color .2s ease,transform .15s ease;
+}
+.chip:hover{background:rgba(65,177,122,.1);border-color:rgba(65,177,122,.4);color:var(--indigo)}
+.chip:active{transform:scale(.97)}
+.chip.on{background:var(--mint);border-color:var(--mint);color:#fff}
+.topics li{animation:topic-in .4s ease both}
+@keyframes topic-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#topics-sub strong{color:var(--indigo)}
 .topics{display:grid;gap:.5rem .875rem;margin-top:1rem}
 @media (min-width:480px){ .topics{grid-template-columns:repeat(2,minmax(0,1fr))} }
 .topics li{display:flex;align-items:center;gap:.5rem;font-size:.9375rem;font-weight:600;color:var(--ink-90)}
@@ -789,21 +798,21 @@ a{color:inherit}
       <div class="two">
         <div class="card panel">
           <h3 class="h3">Tvoje situace</h3>
-          <p class="lead" style="margin-top:.5rem;font-size:.9375rem">Stejné situace, mezi kterými si vybíráš v Edu:</p>
-          <ul class="chips">
-            <li class="on">Student</li>
-            <li>Absolvent</li>
-            <li>Měním práci v oboru</li>
-            <li>Měním práci v jiném oboru</li>
-            <li>Vracím se do práce po pauze</li>
-            <li>Hledám práci po 50+</li>
-            <li>Jsem v pohodě, teď práci nehledám</li>
-          </ul>
+          <p class="lead" style="margin-top:.5rem;font-size:.9375rem">Vyber si, kde právě jsi — vpravo uvidíš, co ti Edu nabídne:</p>
+          <div class="chips" role="tablist" aria-label="Tvoje situace" id="sit-tabs">
+            <button type="button" class="chip on" role="tab" aria-selected="true" aria-controls="topics" data-sit="student">Student</button>
+            <button type="button" class="chip" role="tab" aria-selected="false" aria-controls="topics" data-sit="absolvent">Absolvent</button>
+            <button type="button" class="chip" role="tab" aria-selected="false" aria-controls="topics" data-sit="obor">Měním práci v oboru</button>
+            <button type="button" class="chip" role="tab" aria-selected="false" aria-controls="topics" data-sit="jinyobor">Měním práci v jiném oboru</button>
+            <button type="button" class="chip" role="tab" aria-selected="false" aria-controls="topics" data-sit="pauza">Vracím se do práce po pauze</button>
+            <button type="button" class="chip" role="tab" aria-selected="false" aria-controls="topics" data-sit="50plus">Hledám práci po 50+</button>
+            <button type="button" class="chip" role="tab" aria-selected="false" aria-controls="topics" data-sit="pohoda">Jsem v pohodě, teď práci nehledám</button>
+          </div>
         </div>
-        <div class="card panel">
+        <div class="card panel" role="tabpanel">
           <h3 class="h3">Témata, která už v Edu najdeš</h3>
-          <p class="lead" style="margin-top:.5rem;font-size:.9375rem">Každý měsíc přibývají další.</p>
-          <ul class="topics">
+          <p class="lead" style="margin-top:.5rem;font-size:.9375rem" id="topics-sub">Vybrané pro situaci <strong>Student</strong>. Každý měsíc přibývají další.</p>
+          <ul class="topics" id="topics" aria-live="polite">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Životopis, který HR nepřehlédne</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Jak uspět na pohovoru</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Jak si vyjednat lepší mzdu</li>
@@ -922,6 +931,46 @@ um.addEventListener('click', () => {
   um.querySelector('span').textContent = hv.muted ? 'Zapnout zvuk' : 'Vypnout zvuk';
   if (!hv.muted) { hv.currentTime = 0; hv.play().catch(()=>{}); }
 });
+/* ---------- Pro koho: výběr situace vlevo přepíná témata vpravo ---------- */
+(function(){
+  const tabs = document.getElementById('sit-tabs'), list = document.getElementById('topics'),
+        sub = document.getElementById('topics-sub');
+  if (!tabs || !list) return;
+
+  /* TODO: sladit s reálnou osnovou Edu — návrh podle témat, která už v Edu jsou */
+  const TOPICS = {
+    student:   ['Moje profesní hodnota — co umím, i když nemám praxi', 'Jak na CV, když nemáš co psát do „praxe"', 'LinkedIn pro studenty: profil, který si HR všimne', 'Kde a koho oslovit kvůli brigádě nebo stáži', 'Jak uspět na prvním pohovoru', 'Jak vytěžit maximum ze studia'],
+    absolvent: ['Jak na CV, které HR opravdu zaujme', 'Jak uspět na pohovoru', 'Kde a koho oslovit — firmy nehledají jen v inzerátech', 'Jak si vyjednat nejlepší mzdu', 'Moje výchozí situace jako absolvent', 'Plán prvních 90 dní v nové práci'],
+    obor:      ['Jak si říct o lepší mzdu v oboru, který znáš', 'Jak prezentovat svou profesní hodnotu', 'LinkedIn, který opravdu pomůže najít práci', 'Pohovor, když už máš praxi: co HR testuje', 'Jak odejít ze současné práce v dobrém', 'Plán prvních 90 dní v nové práci'],
+    jinyobor:  ['Jak přeložit svou praxi do řeči nového oboru', 'CV při změně oboru: přínos místo chybějící praxe', 'Pohovor: jak mluvit o zkušenostech bez omlouvání', 'Kde firmy v novém oboru opravdu hledají lidi', 'Mzda při změně oboru — bez nálepky „drahý"', 'Plán prvních 90 dní v nové práci'],
+    pauza:     ['Jak v CV vysvětlit pauzu a udělat z ní výhodu', 'Pohovor po pauze: jak reagovat na nepříjemné otázky', 'Přesvědčivá sebeprezentace za 2 minuty', 'Jak si po pauze vyjednat fér výplatu', 'Moje profesní hodnota po návratu', 'Plán prvních 90 dní v nové práci'],
+    '50plus':  ['Co v CV prozradí víc, než chceš — a jak to napsat jinak', 'Pohovor po padesátce: co HR opravdu zajímá', 'LinkedIn po 50: zkušenost jako výhoda', 'Mzda bez podhodnocení', 'Kde a koho oslovit', 'Moje profesní hodnota'],
+    pohoda:    ['Jak si říct o víc v současné práci', 'Moje profesní hodnota — vím, co umím a co za to chci', 'Plán dalších 90 dní: kam chci růst', 'LinkedIn na udržování sítě, ne jen na hledání', 'Jak poznat, kdy je čas na změnu', 'Jak vytěžit maximum ze své situace']
+  };
+  const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+
+  function render(key, label){
+    list.innerHTML = (TOPICS[key] || []).map((t, i) =>
+      `<li style="animation-delay:${i * 55}ms">${CHECK}${t}</li>`).join('');
+    sub.innerHTML = 'Vybrané pro situaci <strong></strong>. Každý měsíc přibývají další.';
+    sub.querySelector('strong').textContent = label;
+  }
+  tabs.addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    tabs.querySelectorAll('.chip').forEach(c => { c.classList.toggle('on', c === b); c.setAttribute('aria-selected', String(c === b)); });
+    render(b.dataset.sit, b.textContent.trim());
+  });
+  /* šipky mezi záložkami (přístupnost) */
+  tabs.addEventListener('keydown', e => {
+    if (!['ArrowRight','ArrowLeft'].includes(e.key)) return;
+    const chips = [...tabs.querySelectorAll('.chip')], i = chips.indexOf(document.activeElement);
+    if (i < 0) return;
+    const n = chips[(i + (e.key === 'ArrowRight' ? 1 : chips.length - 1)) % chips.length];
+    n.focus(); n.click(); e.preventDefault();
+  });
+  render('student', 'Student');
+})();
+
 /* ---------- parallax bublin v hero (každá jinou rychlostí) ---------- */
 (function(){
   const tags = [...document.querySelectorAll('.hero-phone .tag')];
