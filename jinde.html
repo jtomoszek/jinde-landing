@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jinde — Práce, která tě baví, není náhoda</title>
+<meta name="description" content="Jinde je vzdělávací platforma pro lepší život v práci. Krátká videa z praxe HR, konkrétní kroky a žádná nudná teorie — ať už chceš růst v současné práci, nebo se připravit na novou kariéru.">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="content-language" content="cs">
+<meta name="theme-color" content="#1F2344">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:site_name" content="Jinde">
+<meta property="og:title" content="Jinde — Práce, která tě baví, není náhoda">
+<meta property="og:description" content="Vzdělávací platforma pro lepší život v práci. Krátká videa z praxe HR a konkrétní kroky.">
+<meta property="og:image" content="https://jinde.app/ogs/default.jpg">
+
+<link rel="icon" href="https://dev.besthr.cz/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================================
+   jinde.app — hlavní web
+   Stejný vizuální systém jako landing pages (index.html): barvy, typografie,
+   karty. Návštěvník, který přijde z landing page, nesmí poznat rozdíl.
+   ========================================================================== */
+
+:root{
+  --indigo:#1F2344;
+  --mint:#41B17A;
+  --mint-dark:#359465;
+  --seashell:#F4E9E7;
+  --white:#fff;
+
+  --ink-90:rgba(31,35,68,.90);
+  --ink-70:rgba(31,35,68,.70);
+  --ink-60:rgba(31,35,68,.60);
+  --ink-45:rgba(31,35,68,.45);
+  --line:rgba(31,35,68,.10);
+
+  --font-head:"Plus Jakarta Sans",ui-sans-serif,system-ui,sans-serif;
+  --font-body:"Poppins",ui-sans-serif,system-ui,sans-serif;
+
+  --radius:1rem;
+  --radius-lg:1.25rem;
+  --shadow-card:0 20px 50px -18px rgba(15,23,42,.18);
+  --pad:1rem;
+  --maxw:75rem;
+}
+@media (min-width:640px){ :root{ --pad:1.5rem; } }
+@media (min-width:1024px){ :root{ --pad:2rem; } }
+
+*,*::before,*::after{box-sizing:border-box}
+*{min-width:0}
+[hidden]{display:none!important}
+
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:5rem}
+html,body{max-width:100%;overflow-x:clip}
+@supports not (overflow-x:clip){ html,body{overflow-x:hidden} }
+
+body{
+  margin:0;background:var(--seashell);color:var(--indigo);
+  font-family:var(--font-body);font-size:1rem;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+
+img,svg,video{max-width:100%;height:auto;display:block}
+h1,h2,h3,h4{font-family:var(--font-head);margin:0;letter-spacing:-.02em;text-wrap:balance;overflow-wrap:break-word;hyphens:manual}
+p{margin:0;text-wrap:pretty;overflow-wrap:break-word}
+ul,ol{margin:0;padding:0;list-style:none}
+figure,figcaption,blockquote{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--indigo);outline-offset:3px;border-radius:.5rem}
+.on-mint :focus-visible{outline-color:#fff}
+
+.skip{position:absolute;left:-9999px;top:0;z-index:200;background:var(--indigo);color:#fff;padding:.75rem 1rem;border-radius:0 0 .75rem 0;font-weight:700;font-size:.875rem}
+.skip:focus{left:0}
+
+/* ---- layout ---- */
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad)}
+.section{padding-block:3rem}
+@media (min-width:768px){ .section{padding-block:4.5rem} }
+
+.eyebrow{font-family:var(--font-head);font-size:.6875rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--mint);margin-bottom:.625rem}
+.h2{font-size:clamp(1.5rem,4.4vw,2.25rem);font-weight:800;line-height:1.15}
+.h3{font-size:clamp(1.05rem,3vw,1.25rem);font-weight:800;line-height:1.3}
+.lead{color:var(--ink-60);font-size:clamp(.9375rem,2.6vw,1.0625rem);line-height:1.65}
+.center{text-align:center}
+.center .lead{margin-inline:auto}
+
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-card)}
+
+/* ---- dekorativní pozadí ---- */
+.blobs{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.blobs span{position:absolute;border-radius:50%;filter:blur(110px);opacity:.55;display:block}
+.blobs .b1{top:0;left:0;width:min(800px,120vw);aspect-ratio:1;transform:translate(-45%,-45%);background:rgba(166,211,220,.45)}
+.blobs .b2{right:0;top:40rem;width:min(600px,100vw);aspect-ratio:1;transform:translate(30%,0);background:rgba(65,177,122,.28)}
+
+/* ---- tlačítka ---- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.625rem;
+  min-height:3.25rem;padding:.75rem 1.375rem;border-radius:var(--radius);
+  font-family:var(--font-head);font-size:1rem;font-weight:800;letter-spacing:-.01em;
+  text-decoration:none;cursor:pointer;border:0;line-height:1.2;
+  transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease;
+}
+.btn svg{width:1.125rem;height:1.125rem;flex:none}
+.btn-primary{background:var(--mint);color:#fff;box-shadow:0 14px 34px -12px rgba(65,177,122,.55)}
+.btn-primary:hover{background:var(--mint-dark);transform:translateY(-1px)}
+.btn-ghost{background:rgba(255,255,255,.7);color:var(--indigo);border:1px solid var(--line)}
+.btn-ghost:hover{background:#fff}
+.btn-lg{min-height:3.75rem;padding:.9rem 1.75rem;font-size:1.0625rem}
+
+/* ==========================================================================
+   Hlavička
+   ========================================================================== */
+.site-header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(244,233,231,.85);backdrop-filter:blur(10px);
+  border-bottom:1px solid transparent;
+  transition:border-color .2s ease;
+}
+.site-header.scrolled{border-bottom-color:var(--line)}
+.site-header .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:.875rem}
+.site-header .logo img{height:1.75rem;width:auto}
+@media (min-width:640px){ .site-header .logo img{height:2rem} }
+.site-nav{display:none;align-items:center;gap:1.75rem}
+@media (min-width:900px){ .site-nav{display:flex} }
+.site-nav a{font-size:.9375rem;font-weight:600;color:var(--ink-70);text-decoration:none}
+.site-nav a:hover{color:var(--indigo)}
+.site-header .btn{min-height:2.75rem;padding:.5rem 1.125rem;font-size:.9375rem}
+.badge-edu{border-radius:999px;background:rgba(65,177,122,.12);color:var(--mint);font-family:var(--font-head);font-size:.6875rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.3125rem .75rem}
+
+/* ==========================================================================
+   iPhone mockup (čisté CSS, žádný obrázek rámečku)
+   ========================================================================== */
+.phone{
+  --screen-bg:#fff;
+  position:relative;width:100%;max-width:17rem;margin-inline:auto;
+  aspect-ratio:9/19.5;border-radius:2.75rem;
+  background:#14162b;padding:.55rem;
+  box-shadow:
+    inset 0 0 0 .1875rem #2b2e4a,
+    0 0 0 .0625rem rgba(0,0,0,.35),
+    0 40px 70px -24px rgba(15,23,42,.45);
+}
+.phone::before{ /* dynamic island */
+  content:"";position:absolute;top:1.05rem;left:50%;transform:translateX(-50%);
+  width:30%;height:1.25rem;border-radius:999px;background:#0b0c16;z-index:3;
+}
+.phone .screen{
+  position:relative;width:100%;height:100%;border-radius:2.25rem;overflow:hidden;
+  background:var(--screen-bg);
+}
+.phone .screen > img,.phone .screen > video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;
+}
+.phone.app .screen{padding-top:2.1rem}          /* místo pro status bar nad app headerem */
+.phone.app .screen > img{top:2.1rem;height:calc(100% - 2.1rem)}
+.phone.dark{--screen-bg:#3b3f5c}
+.phone .screen::after{ /* home indicator */
+  content:"";position:absolute;bottom:.5rem;left:50%;transform:translateX(-50%);
+  width:34%;height:.3rem;border-radius:999px;background:rgba(0,0,0,.35);z-index:3;
+}
+.phone.video .screen::after{background:rgba(255,255,255,.55)}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.hero{position:relative;z-index:10;padding-block:2rem 3rem}
+@media (min-width:1024px){ .hero{padding-block:3.5rem 5rem} }
+.hero-grid{display:grid;gap:2.25rem;align-items:center}
+@media (min-width:1024px){ .hero-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:3.5rem} }
+.hero h1{font-size:clamp(2rem,6vw,3.75rem);font-weight:800;line-height:1.06;max-width:16ch}
+.hero .accent{color:var(--mint)}
+.hero-sub{margin-top:1.125rem;max-width:36rem;font-size:clamp(1rem,2.6vw,1.1875rem);line-height:1.65;color:var(--ink-70)}
+.hero-cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.75rem}
+.trustline{display:flex;flex-wrap:wrap;gap:.5rem .375rem;margin-top:1.375rem}
+.trustline li{display:inline-flex;align-items:center;gap:.4375rem;background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:999px;padding:.4375rem .75rem;font-size:.8125rem;font-weight:600;color:var(--ink-70)}
+.trustline svg{width:.875rem;height:.875rem;color:var(--mint);flex:none}
+
+.hero-phone{position:relative}
+.hero-phone .phone{max-width:18.5rem}
+.hero-phone .unmute{
+  position:absolute;left:50%;bottom:-1.25rem;transform:translateX(-50%);
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--indigo);color:#fff;border:0;border-radius:999px;
+  padding:.5rem .875rem .5rem .625rem;font-family:var(--font-head);font-size:.75rem;font-weight:700;
+  cursor:pointer;box-shadow:0 10px 24px -8px rgba(31,35,68,.5);white-space:nowrap;
+}
+.hero-phone .unmute svg{width:1rem;height:1rem}
+.hero-phone .tag{
+  position:absolute;top:2.5rem;left:-.5rem;
+  background:#fff;border:1px solid var(--line);border-radius:.75rem;padding:.5rem .75rem;
+  font-size:.75rem;line-height:1.3;box-shadow:var(--shadow-card);max-width:11rem;
+}
+.hero-phone .tag strong{display:block;font-family:var(--font-head);font-size:.8125rem;color:var(--mint)}
+@media (min-width:1024px){ .hero-phone .tag{left:-2.5rem;top:5rem} }
+
+/* ==========================================================================
+   Tři kroky
+   ========================================================================== */
+.steps{display:grid;gap:.875rem;margin-top:1.75rem;counter-reset:s}
+@media (min-width:768px){ .steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem} }
+.step{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:1.375rem;counter-increment:s}
+.step .num{display:grid;place-items:center;width:2.25rem;height:2.25rem;border-radius:.75rem;background:rgba(65,177,122,.12);color:var(--mint);font-family:var(--font-head);font-weight:900;margin-bottom:.875rem}
+.step .num::before{content:counter(s)}
+.step p{margin-top:.5rem;font-size:.9375rem;line-height:1.6;color:var(--ink-60)}
+
+/* ==========================================================================
+   Videa
+   ========================================================================== */
+.videos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.875rem;margin-top:1.75rem}
+@media (min-width:900px){ .videos{grid-template-columns:repeat(4,minmax(0,1fr));gap:1.25rem} }
+.vcard{display:flex;flex-direction:column;gap:.75rem}
+.vplayer{
+  position:relative;aspect-ratio:9/16;border-radius:var(--radius-lg);overflow:hidden;
+  background:#1F2344;box-shadow:var(--shadow-card);border:0;padding:0;width:100%;cursor:pointer;
+}
+.vplayer img,.vplayer video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vplayer video{display:none;background:#000}
+.vplayer.playing video{display:block}
+.vplayer.playing img,.vplayer.playing .play,.vplayer.playing .len,.vplayer.playing::after{display:none}
+.vplayer::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(15,18,40,.55),rgba(15,18,40,0) 45%);pointer-events:none}
+.vplayer .play{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;
+  width:3.5rem;height:3.5rem;border-radius:50%;
+  background:rgba(255,255,255,.22);backdrop-filter:blur(4px);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.55),0 8px 24px rgba(0,0,0,.35);
+  display:grid;place-items:center;color:#fff;transition:transform .18s ease;
+}
+.vplayer:hover .play{transform:translate(-50%,-50%) scale(1.06)}
+.vplayer .play svg{width:1.375rem;height:1.375rem;margin-left:.1875rem}
+.vplayer .len{position:absolute;right:.625rem;top:.625rem;z-index:2;background:rgba(0,0,0,.55);color:#fff;border-radius:.5rem;padding:.1875rem .5rem;font-size:.75rem;font-weight:700;font-variant-numeric:tabular-nums}
+.vcard .vtag{align-self:flex-start;border-radius:999px;background:rgba(65,177,122,.12);color:var(--mint-dark);font-family:var(--font-head);font-size:.6875rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .625rem}
+.vcard h3{font-size:.9375rem;font-weight:800;line-height:1.35}
+@media (min-width:900px){ .vcard h3{font-size:1rem} }
+
+/* ==========================================================================
+   Jak Edu funguje — 3 mockupy
+   ========================================================================== */
+.how{display:grid;gap:2.5rem;margin-top:2.25rem}
+@media (min-width:768px){ .how{grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem;align-items:start} }
+.how-item{text-align:center}
+.how-item .phone{max-width:15.5rem}
+.how-item h3{margin-top:1.375rem;font-size:1.0625rem;font-weight:800}
+.how-item p{margin-top:.5rem;font-size:.9375rem;line-height:1.6;color:var(--ink-60);max-width:20rem;margin-inline:auto}
+.how-item .k{display:inline-grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:var(--indigo);color:#fff;font-family:var(--font-head);font-weight:900;font-size:.875rem;margin-bottom:.75rem}
+
+/* ==========================================================================
+   Pro koho + témata
+   ========================================================================== */
+.two{display:grid;gap:1.25rem;margin-top:1.75rem}
+@media (min-width:900px){ .two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5rem} }
+.panel{padding:1.5rem}
+@media (min-width:640px){ .panel{padding:2rem} }
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+.chips li{border-radius:999px;border:1px solid var(--line);background:rgba(31,35,68,.03);padding:.5rem .9375rem;font-size:.875rem;font-weight:600;color:var(--ink-70)}
+.chips li.on{background:var(--mint);border-color:var(--mint);color:#fff}
+.topics{display:grid;gap:.5rem .875rem;margin-top:1rem}
+@media (min-width:480px){ .topics{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.topics li{display:flex;align-items:center;gap:.5rem;font-size:.9375rem;font-weight:600;color:var(--ink-90)}
+.topics svg{width:1rem;height:1rem;color:var(--mint);flex:none}
+
+/* ==========================================================================
+   Autorka
+   ========================================================================== */
+.author{display:grid;gap:1.5rem;padding:1.25rem;align-items:start}
+@media (min-width:768px){ .author{grid-template-columns:auto minmax(0,1fr);padding:2rem;gap:2rem} }
+.author-photo{width:6.5rem;height:6.5rem;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px #fff,0 0 0 6px rgba(65,177,122,.25);margin-inline:auto}
+@media (min-width:768px){ .author-photo{width:7.5rem;height:7.5rem;margin-inline:0} }
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.625rem;margin-top:1.25rem}
+.stats div{background:rgba(65,177,122,.07);border:1px solid rgba(65,177,122,.18);border-radius:.875rem;padding:1rem .75rem;text-align:center}
+.stats b{display:block;font-family:var(--font-head);font-size:clamp(1rem,.6rem + 1.6vw,1.625rem);font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}
+.stats span{display:block;margin-top:.375rem;font-size:.8125rem;line-height:1.35;color:var(--ink-60)}
+
+/* ==========================================================================
+   Pro firmy pruh
+   ========================================================================== */
+.firms{
+  background:var(--indigo);color:#fff;border-radius:var(--radius-lg);
+  padding:2rem 1.5rem;display:grid;gap:1.25rem;align-items:center;
+}
+@media (min-width:900px){ .firms{grid-template-columns:minmax(0,1fr) auto;padding:2.5rem 2.75rem;gap:2rem} }
+.firms .eyebrow{color:#7FE0B0}
+.firms h2{font-size:clamp(1.375rem,3.6vw,1.875rem);font-weight:800;line-height:1.2}
+.firms p{margin-top:.625rem;color:rgba(255,255,255,.78);font-size:.9375rem;max-width:36rem}
+.firms .btn-primary{box-shadow:none}
+
+/* ==========================================================================
+   FAQ
+   ========================================================================== */
+.faq{display:grid;gap:.625rem;margin-top:1.5rem;text-align:left}
+.faq details{background:transparent;border:1px solid var(--line);border-radius:var(--radius);padding:0 1rem}
+.faq summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 0;min-height:3rem;cursor:pointer;font-family:var(--font-head);font-size:.9375rem;font-weight:700;line-height:1.4;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:.625rem;height:.625rem;border-right:2px solid var(--mint);border-bottom:2px solid var(--mint);transform:rotate(45deg);transition:transform .2s ease;margin-top:-.25rem}
+.faq details[open] summary::after{transform:rotate(-135deg);margin-top:.25rem}
+.faq .answer{padding:0 0 1rem;font-size:.9375rem;line-height:1.65;color:var(--ink-60)}
+
+/* ==========================================================================
+   Závěrečné CTA + patička
+   ========================================================================== */
+.cta-band{background:linear-gradient(140deg,rgba(31,35,68,.04),#fff 55%,rgba(65,177,122,.12));border:1px solid var(--line);border-radius:var(--radius-lg);padding:2rem 1.25rem;text-align:center}
+@media (min-width:768px){ .cta-band{padding:3rem 2rem} }
+.cta-band .btn{margin-top:1.5rem}
+.microcopy{margin-top:.75rem;font-size:.8125rem;line-height:1.55;color:var(--ink-60)}
+.microcopy .dot{color:var(--ink-45);padding-inline:.25rem}
+
+.site-footer{position:relative;z-index:10;border-top:1px solid var(--line);background:rgba(255,255,255,.5);margin-top:2rem}
+.site-footer .wrap{display:flex;flex-direction:column;align-items:center;gap:1rem;padding-block:2rem;text-align:center}
+.site-footer img{height:2rem;width:auto}
+.site-footer p{max-width:36rem;font-size:.8125rem;line-height:1.6;color:rgba(31,35,68,.5)}
+.site-footer nav{display:flex;flex-wrap:wrap;justify-content:center;gap:.25rem 1rem;font-size:.75rem;font-weight:600;color:var(--mint)}
+.site-footer nav a{text-decoration:none}
+.site-footer nav a:hover{text-decoration:underline;text-underline-offset:2px}
+</style>
+</head>
+
+<body>
+<a class="skip" href="#hlavni-obsah">Přeskočit na hlavní obsah</a>
+
+<header class="site-header" id="top">
+  <div class="wrap">
+    <a class="logo" href="jinde.html" aria-label="Jinde — domů">
+      <img src="https://dev.besthr.cz/jinde.png" alt="Jinde" width="137" height="34">
+    </a>
+    <nav class="site-nav" aria-label="Hlavní navigace">
+      <a href="#jak">Jak Edu funguje</a>
+      <a href="#videa">Videa</a>
+      <a href="#pro-koho">Pro koho</a>
+      <a href="partneri.html">Pro firmy</a>
+    </nav>
+    <a class="btn btn-primary on-mint" href="index.html">Vstoupit do Edu</a>
+  </div>
+</header>
+
+<div style="position:relative">
+  <div class="blobs" aria-hidden="true"><span class="b1"></span><span class="b2"></span></div>
+
+  <main id="hlavni-obsah">
+
+    <!-- ===================== HERO ===================== -->
+    <section class="wrap hero">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Jinde Edu · vzdělávací platforma zdarma</p>
+          <h1>Práce, která tě baví, není náhoda. <span class="accent">Dá se na ni připravit.</span></h1>
+          <p class="hero-sub">
+            Jinde je vzdělávací platforma pro lepší život v práci — ať už chceš růst tam, kde jsi,
+            nebo se připravit na novou kariéru na místě, které tě bude bavit.
+            Krátká videa z praxe HR, konkrétní kroky a žádná nudná teorie.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-primary btn-lg on-mint" href="index.html">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+              Vstoupit do Edu zdarma
+            </a>
+            <a class="btn btn-ghost btn-lg" href="#jak">Jak to funguje</a>
+          </div>
+          <ul class="trustline">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Zdarma, bez platební karty</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>Videa na 3–5 minut</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7z"/></svg>Z praxe HR manažerky</li>
+          </ul>
+        </div>
+
+        <!-- iPhone s běžícím videem (titulky jsou vypálené, běží i bez zvuku) -->
+        <div class="hero-phone">
+          <div class="phone video" aria-label="Ukázka videa z Jinde Edu">
+            <div class="screen">
+              <video id="hero-video" src="media/edu-1.mp4" poster="media/edu-1.jpg"
+                     autoplay muted loop playsinline preload="metadata"
+                     aria-label="Ukázka z Edu: Tvoje praxe z jiného oboru se nepočítá jako nula"></video>
+            </div>
+          </div>
+          <div class="tag" aria-hidden="true"><strong>Změna oboru</strong>Tvoje praxe se nepočítá jako nula</div>
+          <button type="button" class="unmute" id="unmute" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            <span>Zapnout zvuk</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== NENÍ TO TAK SLOŽITÉ ===================== -->
+    <section class="wrap section" aria-labelledby="slozite">
+      <p class="eyebrow">Není to tak složité</p>
+      <h2 class="h2" id="slozite">Aby tě práce bavila a naplňovala, nepotřebuješ štěstí. Potřebuješ tři věci.</h2>
+      <p class="lead" style="margin-top:.75rem;max-width:46rem">
+        Většina lidí hledá práci naslepo — a pak se diví, že je nebaví. My to otáčíme:
+        nejdřív pochopíš, jak to funguje na druhé straně, a teprve potom jednáš.
+      </p>
+
+      <div class="steps">
+        <article class="step">
+          <span class="num" aria-hidden="true"></span>
+          <h3 class="h3">Pochop, jak to vidí druhá strana</h3>
+          <p>Co personalista opravdu čte v CV, na co se ptá na pohovoru a proč firmy nereagují.
+          Ne domněnky — pohled někoho, kdo nabírá každý den.</p>
+        </article>
+        <article class="step">
+          <span class="num" aria-hidden="true"></span>
+          <h3 class="h3">Udělej pár konkrétních kroků</h3>
+          <p>Každé video končí tím, co uděláš ještě dnes. Checklisty a PDF k stažení,
+          žádné „zamysli se nad svou motivací".</p>
+        </article>
+        <article class="step">
+          <span class="num" aria-hidden="true"></span>
+          <h3 class="h3">Sleduj, jak se to mění</h3>
+          <p>Za dokončený obsah sbíráš body a postupuješ úrovněmi. Vidíš, co máš za sebou —
+          a co ti ještě chybí k práci, která ti sedne.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================== VIDEA ===================== -->
+    <section class="wrap section" id="videa" aria-labelledby="videa-h">
+      <p class="eyebrow">Ukázky z Edu</p>
+      <h2 class="h2" id="videa-h">Takhle vypadá obsah, který lidé opravdu dokoukají</h2>
+      <p class="lead" style="margin-top:.75rem;max-width:46rem">
+        Krátká videa na výšku, natočená pro mobil. Jedno téma, jeden příběh z praxe,
+        jeden konkrétní závěr. Klepni a pusť si je se zvukem.
+      </p>
+
+      <div class="videos">
+        <figure class="vcard">
+          <button type="button" class="vplayer" data-src="media/edu-1.mp4" aria-label="Přehrát: Tvoje praxe z jiného oboru se nepočítá jako nula">
+            <img src="media/edu-1.jpg" alt="" width="540" height="960" loading="lazy">
+            <video playsinline preload="none" controls></video>
+            <span class="len">3:49</span>
+            <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg></span>
+          </button>
+          <figcaption>
+            <span class="vtag">Změna oboru</span>
+            <h3>Tvoje praxe z jiného oboru se nepočítá jako nula</h3>
+          </figcaption>
+        </figure>
+
+        <figure class="vcard">
+          <button type="button" class="vplayer" data-src="media/edu-2.mp4" aria-label="Přehrát: Bez známostí se tam nedostaneš? Kde firmy opravdu hledají lidi">
+            <img src="media/edu-2.jpg" alt="" width="540" height="960" loading="lazy">
+            <video playsinline preload="none" controls></video>
+            <span class="len">3:12</span>
+            <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg></span>
+          </button>
+          <figcaption>
+            <span class="vtag">Absolventi</span>
+            <h3>Bez známostí se tam nedostaneš? Kde firmy opravdu hledají lidi</h3>
+          </figcaption>
+        </figure>
+
+        <figure class="vcard">
+          <button type="button" class="vplayer" data-src="media/edu-3.mp4" aria-label="Přehrát: Co v tvém CV prozradí víc, než chceš">
+            <img src="media/edu-3.jpg" alt="" width="540" height="960" loading="lazy">
+            <video playsinline preload="none" controls></video>
+            <span class="len">3:33</span>
+            <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg></span>
+          </button>
+          <figcaption>
+            <span class="vtag">Práce po 50+</span>
+            <h3>Co v tvém CV prozradí víc, než chceš</h3>
+          </figcaption>
+        </figure>
+
+        <figure class="vcard">
+          <button type="button" class="vplayer" data-src="media/edu-4.mp4" aria-label="Přehrát: Za kolik reálně pracují lidi na tvé pozici?">
+            <img src="media/edu-4.jpg" alt="" width="320" height="568" loading="lazy">
+            <video playsinline preload="none" controls></video>
+            <span class="len">4:22</span>
+            <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg></span>
+          </button>
+          <figcaption>
+            <span class="vtag">Mzda</span>
+            <h3>Za kolik reálně pracují lidi na tvé pozici?</h3>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ===================== JAK EDU FUNGUJE ===================== -->
+    <section class="wrap section" id="jak" aria-labelledby="jak-h">
+      <div class="center">
+        <p class="eyebrow">Jak Edu funguje</p>
+        <h2 class="h2" id="jak-h">Obsah se přizpůsobí tobě, ne naopak</h2>
+        <p class="lead" style="margin-top:.75rem;max-width:40rem">
+          Student, změna oboru, návrat po pauze nebo hledání práce po padesátce —
+          každý potřebuje něco jiného. Proto si na začátku vybereš svou situaci.
+        </p>
+      </div>
+
+      <div class="how">
+        <div class="how-item">
+          <div class="phone app">
+            <div class="screen"><img src="media/app-osnova.jpg" alt="Obrazovka Jinde Edu: výběr situace a učební osnova s dokončenou lekcí" width="590" height="1279" loading="lazy"></div>
+          </div>
+          <span class="k" aria-hidden="true">1</span>
+          <h3>Vyber svou situaci</h3>
+          <p>Osnova se poskládá podle toho, kde právě jsi. Vidíš přesně, co tě čeká a co už máš hotové.</p>
+        </div>
+        <div class="how-item">
+          <div class="phone app">
+            <div class="screen"><img src="media/app-video.jpg" alt="Obrazovka Jinde Edu: detail videa Plán prvních 90 dní v nové práci" width="590" height="1279" loading="lazy"></div>
+          </div>
+          <span class="k" aria-hidden="true">2</span>
+          <h3>Pusť si krátké video z praxe</h3>
+          <p>Tři až pět minut, jedna myšlenka. K většině témat i checklist nebo PDF, které si rovnou použiješ.</p>
+        </div>
+        <div class="how-item">
+          <div class="phone app dark">
+            <div class="screen"><img src="media/app-kviz.jpg" alt="Obrazovka Jinde Edu: kontrolní otázka po zhlédnutí videa" width="590" height="1028" loading="lazy" style="object-position:center"></div>
+          </div>
+          <span class="k" aria-hidden="true">3</span>
+          <h3>Ověř si, že to sedí — a sbírej body</h3>
+          <p>Jedna otázka po každém videu. Správná odpověď = body a postup na další úroveň. Malé vítězství, které tě drží v tempu.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PRO KOHO + TÉMATA ===================== -->
+    <section class="wrap section" id="pro-koho" aria-labelledby="prokoho-h">
+      <p class="eyebrow">Pro koho to je</p>
+      <h2 class="h2" id="prokoho-h">Pro každého, kdo chce v práci víc než jen přežít do pátku</h2>
+
+      <div class="two">
+        <div class="card panel">
+          <h3 class="h3">Tvoje situace</h3>
+          <p class="lead" style="margin-top:.5rem;font-size:.9375rem">Stejné situace, mezi kterými si vybíráš v Edu:</p>
+          <ul class="chips">
+            <li class="on">Student</li>
+            <li>Absolvent</li>
+            <li>Měním práci v oboru</li>
+            <li>Měním práci v jiném oboru</li>
+            <li>Vracím se do práce po pauze</li>
+            <li>Hledám práci po 50+</li>
+            <li>Jsem v pohodě, teď práci nehledám</li>
+          </ul>
+        </div>
+        <div class="card panel">
+          <h3 class="h3">Témata, která už v Edu najdeš</h3>
+          <p class="lead" style="margin-top:.5rem;font-size:.9375rem">Každý měsíc přibývají další.</p>
+          <ul class="topics">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Životopis, který HR nepřehlédne</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Jak uspět na pohovoru</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Jak si vyjednat lepší mzdu</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>LinkedIn, který opravdu pomůže</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Kde a koho oslovit</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Plán prvních 90 dní v nové práci</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Moje profesní hodnota</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Jak vytěžit maximum ze své situace</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== KDO ZA TÍM STOJÍ ===================== -->
+    <section class="wrap section" aria-labelledby="kdo-h">
+      <p class="eyebrow">Kdo stojí za projektem</p>
+      <h2 class="h2" id="kdo-h">Kdo ti pomůže</h2>
+
+      <div class="card author" style="margin-top:1.5rem">
+        <img class="author-photo" src="https://dev.besthr.cz/jina.jpg" alt="Portrét Jiny Malecové, HR manažerky a zakladatelky projektu Jinde" width="120" height="120" loading="lazy">
+        <div>
+          <h3 class="h3">Jina Malecová</h3>
+          <p style="margin-top:.25rem;font-size:.8125rem;font-weight:600;color:var(--mint)">Zakladatelka Jinde · HR manažerka · autorka obsahu Jinde Edu</p>
+          <p style="margin-top:.875rem;font-size:.9375rem;line-height:1.65;color:var(--ink-70)">
+            Vybírá kandidáty na druhé straně stolu — takže Edu neukazuje, „co by se mohlo líbit",
+            ale jak nábor probíhá ve skutečnosti. Nabírá ve spektru THP i dělnických pozic,
+            stejně jako pozice vysokého managementu nebo specializované IT role.
+          </p>
+          <div class="stats">
+            <div><b>12</b><span>let v HR</span></div>
+            <div><b>3000+</b><span>posouzených CV</span></div>
+            <div><b>1200+</b><span>hodin kariérního poradenství</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PRO FIRMY ===================== -->
+    <section class="wrap section" aria-labelledby="firmy-h">
+      <div class="firms">
+        <div>
+          <p class="eyebrow">Pro firmy</p>
+          <h2 id="firmy-h">Hledáte lidi, kteří na sobě pracují? Jsou tady.</h2>
+          <p>Staňte se partnerem Jinde Edu a spojte svou značku s lidmi v momentě, kdy na sobě
+          aktivně pracují — dřív, než začnou hledat práci jinde.</p>
+        </div>
+        <a class="btn btn-primary btn-lg on-mint" href="partneri.html">Nabídka pro zaměstnavatele</a>
+      </div>
+    </section>
+
+    <!-- ===================== FAQ ===================== -->
+    <section class="wrap section center" aria-labelledby="faq-h">
+      <p class="eyebrow">Časté otázky</p>
+      <h2 class="h2" id="faq-h">Na co se lidé ptají</h2>
+      <div class="faq">
+        <details>
+          <summary>Kolik to stojí?</summary>
+          <div class="answer">Nic. Jinde Edu je zdarma a nevyžaduje platební údaje. Nejde o ukázku placeného kurzu se skrytým doplatkem.</div>
+        </details>
+        <details>
+          <summary>Musím se registrovat?</summary>
+          <div class="answer">Ano, stačí jméno a e-mail. Díky tomu si Edu pamatuje, co už máš za sebou, a počítá ti body. Odhlásit se dá jedním kliknutím v každé zprávě.</div>
+        </details>
+        <details>
+          <summary>Je to jen pro lidi, kteří hledají práci?</summary>
+          <div class="answer">Ne. Velká část obsahu je o tom, jak si v současné práci říct o víc, jak zvládnout prvních 90 dní na nové pozici nebo jak poznat svou profesní hodnotu. Proto je mezi situacemi i „Jsem v pohodě, teď práci nehledám".</div>
+        </details>
+        <details>
+          <summary>Co je Jinde kromě Edu?</summary>
+          <div class="answer">Edu je první část. Připravujeme propojování lidí a firem podle hodnot a osobnosti — ne jen podle životopisu. Kdo je v Edu aktivní, bude u toho první.</div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ===================== ZÁVĚREČNÉ CTA ===================== -->
+    <section class="wrap section" aria-labelledby="cta-h">
+      <div class="cta-band">
+        <h2 class="h2" id="cta-h">Začni dnes. Za tři minuty budeš vědět víc než většina uchazečů.</h2>
+        <p class="lead" style="margin-top:.75rem;max-width:36rem;margin-inline:auto">
+          Vyber si svou situaci, pusť si první video a udělej první krok k práci, která tě bude bavit.
+        </p>
+        <a class="btn btn-primary btn-lg on-mint" href="index.html">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+          Vstoupit do Edu zdarma
+        </a>
+        <p class="microcopy"><strong>Zdarma</strong><span class="dot">•</span>Videa 3–5 minut<span class="dot">•</span>Odhlásit se můžeš kdykoli</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <img src="https://dev.besthr.cz/jinde.png" alt="Jinde" width="153" height="38" loading="lazy">
+      <p>Jinde Edu — praktický obsah o kariéře, náboru a pracovním trhu. Bez omáčky.</p>
+      <nav aria-label="Odkazy">
+        <a href="#top">Nahoru</a>
+        <a href="partneri.html">Pro firmy</a>
+        <a href="prehled.html">Přehled stránek</a>
+      </nav>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* ---------- hlavička: linka po scrollu ---------- */
+const hdr = document.querySelector('.site-header');
+addEventListener('scroll', () => hdr.classList.toggle('scrolled', scrollY > 8), {passive:true});
+
+/* ---------- hero video: zvuk na vyžádání ---------- */
+const hv = document.getElementById('hero-video');
+const um = document.getElementById('unmute');
+um.addEventListener('click', () => {
+  hv.muted = !hv.muted;
+  um.setAttribute('aria-pressed', String(!hv.muted));
+  um.querySelector('span').textContent = hv.muted ? 'Zapnout zvuk' : 'Vypnout zvuk';
+  if (!hv.muted) { hv.currentTime = 0; hv.play().catch(()=>{}); }
+});
+/* když se hero odscrolluje, pauznout (šetří data i baterii) */
+if ('IntersectionObserver' in window){
+  new IntersectionObserver(([e]) => { e.isIntersecting ? hv.play().catch(()=>{}) : hv.pause(); }, {threshold:.25}).observe(hv);
+}
+
+/* ---------- ukázková videa: načíst až po kliknutí, hrát jen jedno ---------- */
+const players = [...document.querySelectorAll('.vplayer')];
+players.forEach(btn => {
+  const v = btn.querySelector('video');
+  btn.addEventListener('click', e => {
+    if (btn.classList.contains('playing')) return;      // dál už ovládají nativní controls
+    players.forEach(o => { if (o !== btn){ o.classList.remove('playing'); const ov = o.querySelector('video'); ov.pause(); ov.removeAttribute('src'); ov.load(); } });
+    hv.pause(); hv.muted = true; um.querySelector('span').textContent = 'Zapnout zvuk';
+    v.src = btn.dataset.src;
+    btn.classList.add('playing');
+    v.play().catch(()=>{});
+  });
+  v.addEventListener('ended', () => { btn.classList.remove('playing'); v.removeAttribute('src'); v.load(); });
+});
+</script>
+</body>
+</html>

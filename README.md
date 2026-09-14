@@ -13,8 +13,15 @@ Přepracovaná verze stránky `https://dev.besthr.cz/l?name=Video1k1` podle doku
   H2 sekce a 3 odrážky, CTA).
 - **`prehled.html`** — interní rozcestník pro prezentaci: karty všech stránek.
   Má `noindex`, do produkce nepatří.
+- **`jinde.html`** — návrh nového hlavního webu jinde.app ve stejném vizuálu jako
+  landing pages: hero s videem v iPhone mockupu, 4 ukázková videa z Edu, 3 mockupy
+  aplikace, výběr situace, autorka, pruh pro firmy, FAQ. CTA vede na `index.html`
+  (registrace do Edu); až bude ostrá Edu sekce, přesměrovat tam.
+- **`media/`** — videa z Edu převedená do webového MP4 (H.264, 9–13 MB každé),
+  jejich náhledy a ořezané screenshoty aplikace. Zdrojové `.mov` a originální
+  screenshoty leží ve `Video na web/` a `Obrázky edu/`, které jsou v `.gitignore`.
 - **`partneri.html`** — B2B prezentace „Nabídka pro zaměstnavatele" ve stylu
-  PowerPointu: 7 celoobrazovkových snímků, scroll-snap přeskakuje mezi snímky,
+  PowerPointu: 9 celoobrazovkových snímků, scroll-snap přeskakuje mezi snímky,
   listovat jde i šipkami/mezerníkem. Prezentuje ji majitelka naživo — bez
   formuláře a CTA. Video na snímku 3 se přehraje po doplnění URL do konstanty
   `VIDEO_SRC` v souboru.
