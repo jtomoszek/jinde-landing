@@ -334,12 +334,27 @@ a{color:inherit}
 }
 .hero-phone .unmute svg{width:1rem;height:1rem}
 .hero-phone .tag{
-  position:absolute;top:2.5rem;left:-.5rem;
-  background:#fff;border:1px solid var(--line);border-radius:.75rem;padding:.5rem .75rem;
-  font-size:.75rem;line-height:1.3;box-shadow:var(--shadow-card);max-width:11rem;
+  --py:0px;
+  position:absolute;z-index:3;
+  background:#fff;border:1px solid var(--line);border-radius:.875rem;padding:.625rem .875rem;
+  font-size:.75rem;line-height:1.3;box-shadow:var(--shadow-card);max-width:11.5rem;
+  transform:translateY(var(--py));
+  animation:tag-float 5s ease-in-out infinite;
 }
 .hero-phone .tag strong{display:block;font-family:var(--font-head);font-size:.8125rem;color:var(--mint)}
-@media (min-width:1024px){ .hero-phone .tag{left:-2.5rem;top:5rem} }
+.hero-phone .t1{top:4.5rem;left:-2.5rem}
+.hero-phone .t2{top:46%;right:-2rem;animation-delay:-1.7s}
+.hero-phone .t3{bottom:5.5rem;left:-1.5rem;animation-delay:-3.4s}
+/* --py plní JS (parallax), vlnění se k němu přičítá */
+@keyframes tag-float{
+  0%,100%{transform:translateY(var(--py))}
+  50%{transform:translateY(calc(var(--py) - .45rem))}
+}
+@media (max-width:1023px){
+  .hero-phone .t1{top:2rem;left:0}
+  .hero-phone .t2{right:0}
+  .hero-phone .t3{bottom:3rem;left:.25rem}
+}
 
 /* ==========================================================================
    Tři kroky
@@ -526,7 +541,7 @@ a{color:inherit}
   .hero-cta .btn{flex:1 1 100%}
   .hero-phone{padding-top:.5rem}
   .hero-phone .phone{max-width:15rem}
-  .hero-phone .tag{display:none}
+  .hero-phone .tag{max-width:9.5rem;font-size:.6875rem;padding:.5rem .7rem}
   .hero-phone .unmute{bottom:-1rem}
   .how{gap:3rem}
   .how-item .phone{max-width:13.5rem}
@@ -598,7 +613,10 @@ a{color:inherit}
                      aria-label="Ukázka z Edu: Tvoje praxe z jiného oboru se nepočítá jako nula"></video>
             </div>
           </div>
-          <div class="tag" aria-hidden="true"><strong>Změna oboru</strong>Tvoje praxe se nepočítá jako nula</div>
+          <!-- plovoucí bubliny — parallax podle scrollu (různé rychlosti = hloubka) -->
+          <div class="tag t1" data-speed="0.18" aria-hidden="true"><strong>Změna oboru</strong>Tvoje praxe se nepočítá jako nula</div>
+          <div class="tag t2" data-speed="-0.12" aria-hidden="true"><strong>✓ Lekce dokončena</strong>+30 XP · Plán prvních 90 dní</div>
+          <div class="tag t3" data-speed="0.3" aria-hidden="true"><strong>Mzda</strong>Za kolik reálně pracují lidi na tvé pozici?</div>
           <button type="button" class="unmute" id="unmute" aria-pressed="false">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
             <span>Zapnout zvuk</span>
@@ -984,6 +1002,23 @@ um.addEventListener('click', () => {
   um.querySelector('span').textContent = hv.muted ? 'Zapnout zvuk' : 'Vypnout zvuk';
   if (!hv.muted) { hv.currentTime = 0; hv.play().catch(()=>{}); }
 });
+/* ---------- parallax bublin v hero (každá jinou rychlostí) ---------- */
+(function(){
+  const tags = [...document.querySelectorAll('.hero-phone .tag')];
+  if (!tags.length || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const hero = document.querySelector('.hero');
+  let ticking = false;
+  function update(){
+    ticking = false;
+    const y = scrollY;
+    if (y > hero.offsetTop + hero.offsetHeight) return;     /* hero mimo obraz — nepočítat */
+    tags.forEach(t => t.style.setProperty('--py', (y * parseFloat(t.dataset.speed)).toFixed(1) + 'px'));
+  }
+  addEventListener('scroll', () => { if (!ticking){ ticking = true; requestAnimationFrame(update); } }, {passive:true});
+  window.__parallax = update;                                /* háček pro testování */
+  update();
+})();
+
 /* když se hero odscrolluje, pauznout (šetří data i baterii) */
 if ('IntersectionObserver' in window){
   new IntersectionObserver(([e]) => { e.isIntersecting ? hv.play().catch(()=>{}) : hv.pause(); }, {threshold:.25}).observe(hv);
