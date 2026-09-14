@@ -171,6 +171,33 @@ a{color:inherit}
 }
 .phone.video .screen::after{background:rgba(255,255,255,.55)}
 
+/* animovaný průchod lekcí (první mockup) — snímky se prolínají, na konci konfety */
+.phone.anim .screen > img.f{opacity:0;transition:opacity .45s ease}
+.phone.anim .screen > img.f.on{opacity:1}
+.phone.anim .screen > img.full{top:0;height:100%}
+.phone.anim .xp{
+  position:absolute;left:50%;top:36%;z-index:4;pointer-events:none;opacity:0;
+  transform:translate(-50%,10px) scale(.6);
+  background:var(--mint);color:#fff;font-family:var(--font-head);font-weight:900;font-size:1rem;
+  padding:.4rem .95rem;border-radius:999px;box-shadow:0 10px 24px -6px rgba(65,177,122,.6);
+}
+.phone.anim .xp.pop{animation:xp-pop 2s ease-out forwards}
+@keyframes xp-pop{
+  0%{opacity:0;transform:translate(-50%,10px) scale(.6)}
+  15%{opacity:1;transform:translate(-50%,0) scale(1.12)}
+  30%{transform:translate(-50%,0) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-44px) scale(1)}
+}
+.phone.anim .confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:4}
+.phone.anim .confetti i{
+  position:absolute;top:-5%;border-radius:.125rem;opacity:0;
+  animation:confetti-fall var(--d) cubic-bezier(.3,.7,.6,1) var(--delay) forwards;
+}
+@keyframes confetti-fall{
+  0%{opacity:1;transform:translate3d(0,0,0) rotate(0)}
+  100%{opacity:.85;transform:translate3d(var(--x),var(--y),0) rotate(var(--r))}
+}
+
 /* ==========================================================================
    Hero
    ========================================================================== */
@@ -602,12 +629,21 @@ a{color:inherit}
 
       <div class="how">
         <div class="how-item">
-          <div class="phone app">
-            <div class="screen"><img src="media/app-osnova.jpg" alt="Obrazovka Jinde Edu: výběr situace a učební osnova s dokončenou lekcí" width="590" height="1279" loading="lazy"></div>
+          <!-- animovaný průchod jednou lekcí: osnova → detail → video → otázka → hotovo + konfety -->
+          <div class="phone app anim" id="demo-phone" aria-label="Ukázka průchodu lekcí v Jinde Edu">
+            <div class="screen">
+              <img class="f on" src="media/app-osnova-0.jpg" alt="Učební osnova podle zvolené situace" width="590" height="1279">
+              <img class="f" src="media/app-video.jpg" alt="Detail lekce s videem" width="590" height="1279">
+              <img class="f full" src="media/app-play.jpg" alt="Přehrávání videa" width="590" height="1279">
+              <img class="f full" src="media/app-kviz.jpg" alt="Kontrolní otázka po videu" width="590" height="1028" style="object-position:center">
+              <img class="f" src="media/app-osnova.jpg" alt="Osnova s dokončenou lekcí" width="590" height="1279">
+              <div class="confetti" aria-hidden="true"></div>
+              <div class="xp" aria-hidden="true">+30 XP</div>
+            </div>
           </div>
           <span class="k" aria-hidden="true">1</span>
-          <h3>Vyber svou situaci</h3>
-          <p>Osnova se poskládá podle toho, kde právě jsi. Vidíš přesně, co tě čeká a co už máš hotové.</p>
+          <h3>Vyber situaci a projdi lekci</h3>
+          <p>Osnova se poskládá podle toho, kde právě jsi. Pustíš video, odpovíš na jednu otázku — a lekce je hotová, i s body navíc.</p>
         </div>
         <div class="how-item">
           <div class="phone app">
@@ -799,6 +835,53 @@ lbx.addEventListener('click', closeLightbox);
 lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
 addEventListener('keydown', e => { if (e.key === 'Escape' && !lb.hidden) closeLightbox(); });
 lbv.addEventListener('ended', closeLightbox);
+
+/* ---------- animovaný průchod lekcí v prvním mockupu ---------- */
+(function(){
+  const ph = document.getElementById('demo-phone'); if (!ph) return;
+  const frames = [...ph.querySelectorAll('img.f')];
+  const conf = ph.querySelector('.confetti'), xp = ph.querySelector('.xp');
+  const DUR = [1700, 1600, 2400, 2300, 3200];            /* ms na snímek */
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let i = 0, timer = null, running = false, inView = false;
+
+  const show = n => frames.forEach((f, k) => f.classList.toggle('on', k === n));
+
+  function burst(){
+    const h = ph.querySelector('.screen').clientHeight;
+    const colors = ['#41B17A','#1F2344','#F9C74F','#F28482','#7FE0B0','#ffffff'];
+    conf.innerHTML = '';
+    for (let k = 0; k < 48; k++){
+      const s = document.createElement('i');
+      s.style.left = Math.random()*100 + '%';
+      s.style.width = (4 + Math.random()*6) + 'px';
+      s.style.height = (8 + Math.random()*8) + 'px';
+      s.style.background = colors[k % colors.length];
+      s.style.setProperty('--x', (Math.random()*70 - 35) + 'px');
+      s.style.setProperty('--y', (h + 30) + 'px');
+      s.style.setProperty('--r', (Math.random()*720 - 360) + 'deg');
+      s.style.setProperty('--d', (1.5 + Math.random()*1.3) + 's');
+      s.style.setProperty('--delay', (Math.random()*.55) + 's');
+      conf.appendChild(s);
+    }
+    xp.classList.remove('pop'); void xp.offsetWidth; xp.classList.add('pop');
+  }
+  function step(){
+    show(i);
+    if (i === frames.length - 1) burst();
+    timer = setTimeout(() => { i = (i + 1) % frames.length; step(); }, DUR[i]);
+  }
+  function start(){ if (running || reduce) return; running = true; i = 0; step(); }
+  function stop(){ running = false; clearTimeout(timer); conf.innerHTML = ''; xp.classList.remove('pop'); }
+
+  if (reduce){ show(frames.length - 1); return; }   /* bez animací: rovnou hotová lekce */
+  show(0);
+  ph.__start = start; ph.__stop = stop;             /* háčky pro testování */
+  if ('IntersectionObserver' in window){
+    new IntersectionObserver(([e]) => { inView = e.isIntersecting; inView ? start() : stop(); }, {threshold:.4}).observe(ph);
+  } else { inView = true; start(); }
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : (inView && start()));
+})();
 
 /* šipky pásu (desktop) — posun o jednu kartu; stav podle pozice scrollu */
 const rail = document.getElementById('rail');
