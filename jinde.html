@@ -369,6 +369,30 @@ a{color:inherit}
 }
 .vchip::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:var(--mint)}
 
+/* Scrollytelling (vzor: evobeds „Komu postel pomáhá"): sekce dostane výšku
+   obrazovka + dráha posunu, obsah se přilepí pod hlavičku a rolování stránky
+   posouvá pás. Aktivní karta ostrá, ostatní lehce zašedlé. */
+[data-hscroll]{padding:0}
+.hscroll-sticky{padding-block:3.5rem}
+@media (min-width:900px){
+  section[data-hscroll]{position:relative}
+  .hscroll-sticky{
+    position:sticky;top:0;min-height:100svh;box-sizing:border-box;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:calc(4.25rem + 1.5rem) 0 2rem;                 /* horní odsazení = přilepená hlavička */
+  }
+  [data-hscroll] .rail{scroll-snap-type:none;scroll-behavior:auto} /* posun řídí stránka, ne snap ani šipky */
+  [data-hscroll] .rail-nav{display:none}
+  [data-hscroll] .vcard{flex-basis:26rem}
+}
+@media (min-width:900px) and (max-height:820px){            /* nižší displeje: ať se přilepený blok vejde */
+  [data-hscroll] .lead{display:none}
+  [data-hscroll] .vcard{flex-basis:22rem}
+  [data-hscroll] .vcard p{display:none}
+}
+[data-hscroll] .vcard{transition:opacity .5s ease,transform .5s ease,box-shadow .5s ease}
+[data-hscroll] .vcard.utlum{opacity:.38;transform:scale(.97)}
+
 /* šipky pásu — jen desktop, na mobilu se swipuje */
 .rail-nav{display:none;position:absolute;top:50%;transform:translateY(-50%);z-index:3;
   width:2.75rem;height:2.75rem;border-radius:50%;border:1px solid var(--line);
@@ -598,7 +622,11 @@ a{color:inherit}
     </section>
 
     <!-- ===================== VIDEA ===================== -->
-    <section class="wrap section" id="videa" aria-labelledby="videa-h">
+    <!-- Scrollytelling: sekce je vysoká, obsah se přilepí a rolování stránky
+         posouvá pás karet vodorovně. Aktivní je vždy jedna karta, ostatní ztlumené. -->
+    <section class="section" id="videa" data-hscroll aria-labelledby="videa-h">
+    <div class="hscroll-sticky">
+    <div class="wrap">
       <p class="eyebrow">Ukázky z Edu</p>
       <h2 class="h2" id="videa-h">Takhle vypadá obsah, který lidé opravdu dokoukají</h2>
       <p class="lead" style="margin-top:.75rem;max-width:46rem">
@@ -676,6 +704,8 @@ a{color:inherit}
           </article>
         </div>
       </div>
+    </div>
+    </div>
     </section>
 
     <!-- celoobrazovkový přehrávač ukázek -->
@@ -1029,6 +1059,53 @@ next.addEventListener('click', () => rail.scrollBy({left: railStep(), behavior:'
 rail.addEventListener('scroll', railState, {passive:true});
 addEventListener('resize', railState);
 railState();
+
+/* ---------- scrollytelling pásu: rolování stránky = vodorovný posun karet ---------- */
+(function(){
+  const root = document.querySelector('section[data-hscroll]');
+  const sticky = root && root.querySelector('.hscroll-sticky');
+  if (!root || !sticky) return;
+  const mq = matchMedia('(min-width: 900px)');
+  const cards = [...rail.querySelectorAll('.vcard')];
+  const RUNWAY = 1.4;                                  /* delší dráha = pomalejší, čitelnější průjezd */
+  let ticking = false, railTick = false;
+
+  const maxPosun = () => Math.max(0, rail.scrollWidth - rail.clientWidth);
+  const stickyTop = () => parseFloat(getComputedStyle(sticky).top) || 0;
+
+  /* Pozornost patří jedné kartě podle průběhu posunu; ostatní se ztlumí. */
+  function zaostri(){
+    const max = maxPosun();
+    if (max <= 0){ cards.forEach(c => c.classList.remove('utlum')); return; }
+    const p = Math.min(1, Math.max(0, rail.scrollLeft / max));
+    const aktivni = Math.round(p * (cards.length - 1));
+    cards.forEach((c, i) => c.classList.toggle('utlum', i !== aktivni));
+  }
+  rail.addEventListener('scroll', () => {              /* i ruční posun (mobil, šipky) */
+    if (!railTick){ railTick = true; requestAnimationFrame(() => { railTick = false; zaostri(); }); }
+  }, {passive:true});
+
+  function layout(){
+    root.style.height = mq.matches ? (sticky.offsetHeight + maxPosun() * RUNWAY) + 'px' : '';
+  }
+  function update(){
+    ticking = false;
+    if (!mq.matches) return;
+    const rect = root.getBoundingClientRect();
+    const draha = rect.height - sticky.offsetHeight;
+    if (draha <= 0) return;
+    const p = Math.min(1, Math.max(0, (stickyTop() - rect.top) / draha));
+    rail.scrollLeft = p * maxPosun();
+    zaostri();
+  }
+  function onScroll(){ if (!ticking){ ticking = true; requestAnimationFrame(update); } }
+  addEventListener('scroll', onScroll, {passive:true});
+  addEventListener('resize', () => { layout(); onScroll(); });
+  mq.addEventListener('change', () => { layout(); onScroll(); zaostri(); });   /* přepnutí mobil ↔ desktop */
+  addEventListener('load', () => { layout(); onScroll(); zaostri(); });
+  window.__hscroll = update;                           /* háček pro testování */
+  layout(); update(); zaostri();
+})();
 </script>
 </body>
 </html>
