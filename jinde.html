@@ -566,8 +566,15 @@ a{color:inherit}
 @media (max-width:639px){
   .hero{padding-block:6.25rem 2.5rem}      /* pod plovoucí hlavičkou */
   .hero-grid{gap:2.5rem}
-  .hero h1{font-size:clamp(2rem,9.5vw,2.6rem)}
+  /* vzdušnější hero: volnější řádkování a větší mezery mezi bloky */
+  .hero .eyebrow{margin-bottom:1rem}
+  .hero h1{font-size:clamp(2rem,9.5vw,2.6rem);line-height:1.18}
+  .hero-sub{margin-top:1.5rem;line-height:1.8}
+  .hero-cta{margin-top:2.25rem;gap:.875rem}
   .hero-cta .btn{flex:1 1 100%}
+  .trustline{margin-top:1.75rem;gap:.625rem .5rem}
+  .lead,.expert-points p,.vcard p,.faq .answer,.risk p{line-height:1.75}
+  .h2{line-height:1.25}
   .hero-phone{padding-top:.5rem}
   .hero-phone .phone{max-width:15rem}
   .hero-phone .tag{max-width:9.5rem;font-size:.6875rem;padding:.5rem .7rem}
