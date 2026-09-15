@@ -384,6 +384,7 @@ a{color:inherit}
   [data-hscroll] .rail{scroll-snap-type:none;scroll-behavior:auto} /* posun řídí stránka, ne snap ani šipky */
   [data-hscroll] .rail-nav{display:none}
   [data-hscroll] .vcard{flex-basis:26rem}
+  [data-hscroll] .rail{gap:2.5rem}                        /* větší mezery mezi kartami */
 }
 @media (min-width:900px) and (max-height:820px){            /* nižší displeje: ať se přilepený blok vejde */
   [data-hscroll] .lead{display:none}
@@ -1116,7 +1117,8 @@ railState();
   if (!root || !sticky) return;
   const mq = matchMedia('(min-width: 900px)');
   const cards = [...rail.querySelectorAll('.vcard')];
-  const RUNWAY = 1.4;                                  /* delší dráha = pomalejší, čitelnější průjezd */
+  const RUNWAY = 2.6;   /* dráha scrollu = 2,6× vodorovný posun → ~500 px rolování na kartu */
+  const HOLD = 0.08;    /* na začátku a na konci se pás na chvíli zastaví (8 % dráhy) */
   let ticking = false, railTick = false;
 
   const maxPosun = () => Math.max(0, rail.scrollWidth - rail.clientWidth);
@@ -1143,7 +1145,8 @@ railState();
     const rect = root.getBoundingClientRect();
     const draha = rect.height - sticky.offsetHeight;
     if (draha <= 0) return;
-    const p = Math.min(1, Math.max(0, (stickyTop() - rect.top) / draha));
+    const raw = Math.min(1, Math.max(0, (stickyTop() - rect.top) / draha));
+    const p = Math.min(1, Math.max(0, (raw - HOLD) / (1 - 2 * HOLD)));   /* plató na krajích */
     rail.scrollLeft = p * maxPosun();
     zaostri();
   }
