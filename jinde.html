@@ -449,16 +449,59 @@ a{color:inherit}
 .topics svg{width:1rem;height:1rem;color:var(--mint);flex:none}
 
 /* ==========================================================================
-   Autorka
+   Kariérní expertka — portrét s citací + argumenty, proč jí věřit
    ========================================================================== */
-.author{display:grid;gap:1.5rem;padding:1.25rem;align-items:start}
-@media (min-width:768px){ .author{grid-template-columns:auto minmax(0,1fr);padding:2rem;gap:2rem} }
-.author-photo{width:6.5rem;height:6.5rem;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px #fff,0 0 0 6px rgba(65,177,122,.25);margin-inline:auto}
-@media (min-width:768px){ .author-photo{width:7.5rem;height:7.5rem;margin-inline:0} }
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.625rem;margin-top:1.25rem}
+.expert{display:grid;gap:2rem;align-items:center}
+@media (min-width:900px){ .expert{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:3.5rem} }
+@media (min-width:1200px){ .expert{gap:5rem} }
+
+.expert-media{position:relative;max-width:26rem;margin-inline:auto;width:100%}
+.expert-media > img{
+  width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center 12%;
+  border-radius:1.75rem;box-shadow:0 40px 80px -30px rgba(31,35,68,.45);
+}
+.expert-badge{
+  position:absolute;top:1.125rem;left:1.125rem;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+  border-radius:999px;padding:.5rem .875rem;font-size:.8125rem;font-weight:600;color:var(--ink-70);
+  box-shadow:0 10px 24px -10px rgba(31,35,68,.35);
+}
+.expert-badge b{font-family:var(--font-head);color:var(--mint);margin-right:.25rem}
+.expert-quote{
+  position:absolute;left:1rem;right:1rem;bottom:-1.75rem;
+  background:#fff;border:1px solid var(--line);border-radius:1.125rem;padding:1rem 1.125rem;
+  box-shadow:var(--shadow-card);
+}
+.expert-quote blockquote{font-family:var(--font-head);font-size:.9375rem;font-weight:700;line-height:1.4;color:var(--indigo)}
+.expert-quote figcaption{margin-top:.625rem;font-size:.75rem;color:var(--ink-60);display:flex;flex-wrap:wrap;gap:.25rem .5rem;align-items:baseline}
+.expert-quote strong{font-family:var(--font-head);color:var(--mint-dark)}
+@media (max-width:899px){ .expert-media{margin-bottom:2.25rem} }
+@media (min-width:900px){
+  .expert-quote{left:-1.5rem;right:2rem;bottom:1.5rem;padding:1.25rem 1.375rem}
+  .expert-quote blockquote{font-size:1.0625rem}
+}
+
+.expert-body .h2{max-width:20ch}
+.expert-body .accent{color:var(--mint)}
+.expert-points{display:grid;gap:1rem;margin-top:1.75rem}
+.expert-points li{display:flex;gap:.875rem;align-items:flex-start}
+.expert-points .pi{flex:none;display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:.75rem;background:rgba(65,177,122,.12);color:var(--mint)}
+.expert-points .pi svg{width:1.125rem;height:1.125rem}
+.expert-points strong{display:block;font-family:var(--font-head);font-size:1rem;font-weight:800;line-height:1.3}
+.expert-points p{margin-top:.25rem;font-size:.9375rem;line-height:1.6;color:var(--ink-60)}
+
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.625rem;margin-top:1.75rem}
 .stats div{background:rgba(65,177,122,.07);border:1px solid rgba(65,177,122,.18);border-radius:.875rem;padding:1rem .75rem;text-align:center}
-.stats b{display:block;font-family:var(--font-head);font-size:clamp(1rem,.6rem + 1.6vw,1.625rem);font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}
+.stats b{display:block;font-family:var(--font-head);font-size:clamp(1.125rem,.7rem + 1.6vw,1.75rem);font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}
 .stats span{display:block;margin-top:.375rem;font-size:.8125rem;line-height:1.35;color:var(--ink-60)}
+.expert-cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.75rem}
+@media (max-width:639px){ .expert-cta .btn{flex:1 1 100%} }
+
+/* jemné objevení při scrollu */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+.expert-body.reveal{transition-delay:.15s}
+@media (prefers-reduced-motion:reduce){ .reveal{opacity:1;transform:none;transition:none} }
 
 /* ==========================================================================
    Pro firmy pruh
@@ -827,25 +870,57 @@ a{color:inherit}
       </div>
     </section>
 
-    <!-- ===================== KDO ZA TÍM STOJÍ ===================== -->
-    <section class="wrap section" aria-labelledby="kdo-h">
-      <p class="eyebrow">Kdo stojí za projektem</p>
-      <h2 class="h2" id="kdo-h">Kdo ti pomůže</h2>
+    <!-- ===================== KARIÉRNÍ EXPERTKA ===================== -->
+    <section class="wrap section" id="expert" aria-labelledby="kdo-h">
+      <div class="expert">
+        <div class="expert-media reveal">
+          <img src="media/edu-2.jpg" alt="Jina Malecová, HR manažerka a zakladatelka Jinde, při natáčení lekce pro Jinde Edu" width="540" height="960" loading="lazy">
+          <span class="expert-badge"><b>12 let</b> na straně, která rozhoduje</span>
+          <figure class="expert-quote">
+            <blockquote>„Neučím, jak se firmám zalíbit. Ukazuju, podle čeho se doopravdy rozhodují — a co s tím můžeš udělat ještě dnes."</blockquote>
+            <figcaption><strong>Jina Malecová</strong>zakladatelka Jinde · HR manažerka</figcaption>
+          </figure>
+        </div>
 
-      <div class="card author" style="margin-top:1.5rem">
-        <img class="author-photo" src="https://dev.besthr.cz/jina.jpg" alt="Portrét Jiny Malecové, HR manažerky a zakladatelky projektu Jinde" width="120" height="120" loading="lazy">
-        <div>
-          <h3 class="h3">Jina Malecová</h3>
-          <p style="margin-top:.25rem;font-size:.8125rem;font-weight:600;color:var(--mint)">Zakladatelka Jinde · HR manažerka · autorka obsahu Jinde Edu</p>
-          <p style="margin-top:.875rem;font-size:.9375rem;line-height:1.65;color:var(--ink-70)">
-            Vybírá kandidáty na druhé straně stolu — takže Edu neukazuje, „co by se mohlo líbit",
-            ale jak nábor probíhá ve skutečnosti. Nabírá ve spektru THP i dělnických pozic,
-            stejně jako pozice vysokého managementu nebo specializované IT role.
+        <div class="expert-body reveal">
+          <p class="eyebrow">Kariérní expertka</p>
+          <h2 class="h2" id="kdo-h">Rady od někoho, kdo lidi opravdu nabírá. <span class="accent">Ne od teoretika.</span></h2>
+          <p class="lead" style="margin-top:.875rem">
+            Jina Malecová vybírá kandidáty na druhé straně stolu už dvanáct let — od dělnických pozic
+            přes THP až po vysoký management a specializované IT role. V Edu ti říká to,
+            co ti personalista na pohovoru nahlas nepoví.
           </p>
+
+          <ul class="expert-points">
+            <li>
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></span>
+              <div><strong>Pohled z druhé strany stolu</strong><p>Co HR skutečně čte v CV, co testuje na pohovoru a proč firmy nereagují. Ne domněnky — zkušenost z každodenního náboru.</p></div>
+            </li>
+            <li>
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+              <div><strong>Kroky, ne teorie</strong><p>Každé video končí tím, co uděláš ještě dnes. K většině témat checklist nebo PDF, které si rovnou použiješ.</p></div>
+            </li>
+            <li>
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
+              <div><strong>Odpovědi na tvoje otázky</strong><p>Pod každou lekcí můžeš napsat, co tě zajímá. Vybrané otázky Jina rozebírá v dalších videích a na živých webinářích Jinde Edu.</p></div>
+            </li>
+          </ul>
+
           <div class="stats">
-            <div><b>12</b><span>let v HR</span></div>
-            <div><b>3000+</b><span>posouzených CV</span></div>
-            <div><b>1200+</b><span>hodin kariérního poradenství</span></div>
+            <div><b data-count="12">12</b><span>let v HR</span></div>
+            <div><b data-count="3000" data-suffix="+">3000+</b><span>posouzených CV</span></div>
+            <div><b data-count="1200" data-suffix="+">1200+</b><span>hodin kariérního poradenství</span></div>
+          </div>
+
+          <div class="expert-cta">
+            <a class="btn btn-primary on-mint" href="#videa">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+              Pusť si její první video
+            </a>
+            <a class="btn btn-ghost" href="https://www.linkedin.com/in/jina-m-6452b3194" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              LinkedIn
+            </a>
           </div>
         </div>
       </div>
@@ -970,6 +1045,34 @@ um.addEventListener('click', () => {
     n.focus(); n.click(); e.preventDefault();
   });
   render('student', 'Student');
+})();
+
+/* ---------- objevení sekce expertky + nabíhající čísla ---------- */
+(function(){
+  const els = [...document.querySelectorAll('.reveal')];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if ('IntersectionObserver' in window && !reduce){
+    const io = new IntersectionObserver(en => en.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold:.2});
+    els.forEach(el => io.observe(el));
+  } else els.forEach(el => el.classList.add('in'));
+
+  const nums = [...document.querySelectorAll('.stats b[data-count]')];
+  if (!nums.length) return;
+  function count(el){
+    const target = parseInt(el.dataset.count, 10), suffix = el.dataset.suffix || '';
+    if (reduce){ el.textContent = target + suffix; return; }
+    const t0 = performance.now(), dur = 1400;
+    (function tick(now){
+      if (document.hidden){ el.textContent = target + suffix; return; }
+      const p = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * e) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    })(t0);
+  }
+  if ('IntersectionObserver' in window){
+    const io2 = new IntersectionObserver(en => en.forEach(e => { if (e.isIntersecting){ count(e.target); io2.unobserve(e.target); } }), {threshold:.6});
+    nums.forEach(n => io2.observe(n));
+  }
 })();
 
 /* ---------- parallax bublin v hero (každá jinou rychlostí) ---------- */
