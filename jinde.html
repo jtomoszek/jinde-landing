@@ -589,6 +589,13 @@ a{color:inherit}
     mask-image:linear-gradient(to right,transparent,#000 1.25rem,#000 calc(100% - 1.25rem),transparent);
   }
 }
+/* Safari: overflow:hidden se zaoblenými rohy neořízne <video> (vlastní vrstva).
+   Maska + izolovaný kompozitní kontext donutí Safari ořez respektovat. */
+.phone .screen,.vmedia,.lightbox .frame{
+  isolation:isolate;
+  -webkit-mask-image:-webkit-radial-gradient(#fff,#000);
+  transform:translateZ(0);
+}
 </style>
 </head>
 
