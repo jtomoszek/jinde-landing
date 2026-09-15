@@ -1097,7 +1097,12 @@ um.addEventListener('click', () => {
     ticking = false;
     const y = scrollY;
     if (y > hero.offsetTop + hero.offsetHeight) return;     /* hero mimo obraz — nepočítat */
-    tags.forEach(t => t.style.setProperty('--py', (y * parseFloat(t.dataset.speed)).toFixed(1) + 'px'));
+    /* strop posunu: na mobilu je hero vysoké, bublina by jinak utekla do další sekce */
+    const limit = innerWidth < 640 ? 28 : innerWidth < 1024 ? 60 : 140;
+    tags.forEach(t => {
+      const py = Math.max(-limit, Math.min(limit, y * parseFloat(t.dataset.speed)));
+      t.style.setProperty('--py', py.toFixed(1) + 'px');
+    });
   }
   addEventListener('scroll', () => { if (!ticking){ ticking = true; requestAnimationFrame(update); } }, {passive:true});
   window.__parallax = update;                                /* háček pro testování */
