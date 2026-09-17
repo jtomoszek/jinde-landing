@@ -147,6 +147,54 @@ a{color:inherit}
 .site-nav a{font-size:.9375rem;font-weight:600;color:var(--ink-70);text-decoration:none}
 .site-nav a:hover{color:var(--indigo)}
 .site-header .btn{min-height:2.75rem;padding:.5rem 1.125rem;font-size:.9375rem}
+
+/* ---- hamburger + mobilní menu (do 899 px) ---- */
+.burger{
+  display:none;position:relative;width:2.75rem;height:2.75rem;flex:none;
+  border:1px solid var(--line);border-radius:50%;background:rgba(255,255,255,.6);cursor:pointer;
+  transition:background-color .2s ease;
+}
+.burger span{
+  position:absolute;left:.8125rem;width:1.125rem;height:2px;border-radius:2px;background:var(--indigo);
+  transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .2s ease,top .3s cubic-bezier(.4,0,.2,1);
+}
+.burger span:nth-child(1){top:.9375rem}
+.burger span:nth-child(2){top:1.3125rem}
+.burger span:nth-child(3){top:1.6875rem}
+.burger[aria-expanded="true"]{background:var(--indigo);border-color:var(--indigo)}
+.burger[aria-expanded="true"] span{background:#fff}
+.burger[aria-expanded="true"] span:nth-child(1){top:1.3125rem;transform:rotate(45deg)}
+.burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.burger[aria-expanded="true"] span:nth-child(3){top:1.3125rem;transform:rotate(-45deg)}
+@media (max-width:899px){
+  .burger{display:block}
+  .site-header .wrap{gap:.625rem}
+  .site-header .hdr-cta{margin-left:auto;padding:.5rem .875rem;font-size:.875rem}
+}
+@media (max-width:379px){ .site-header .hdr-cta{display:none} }   /* nejužší displeje: CTA je v menu */
+
+.menu-backdrop{position:fixed;inset:0;z-index:48;background:rgba(31,35,68,.28);backdrop-filter:blur(2px);opacity:0;transition:opacity .3s ease}
+.menu-backdrop.open{opacity:1}
+.mobile-menu{
+  position:fixed;left:50%;top:5.75rem;z-index:49;width:95%;max-width:26rem;
+  transform:translate(-50%,-8px);opacity:0;
+  background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.7);border-radius:1.5rem;padding:.75rem;
+  box-shadow:0 24px 60px -20px rgba(31,35,68,.35);
+  display:grid;gap:.25rem;
+  transition:opacity .3s cubic-bezier(.4,0,.2,1),transform .3s cubic-bezier(.4,0,.2,1);
+}
+.mobile-menu.open{opacity:1;transform:translate(-50%,0)}
+.mobile-menu > a:not(.btn){
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.9375rem 1rem;border-radius:1rem;
+  font-family:var(--font-head);font-size:1.0625rem;font-weight:700;color:var(--indigo);text-decoration:none;
+}
+.mobile-menu > a:not(.btn) span{color:var(--mint);font-weight:800}
+.mobile-menu > a:not(.btn):hover,.mobile-menu > a:not(.btn):focus-visible{background:rgba(65,177,122,.1)}
+.mobile-menu .btn{margin-top:.5rem;width:100%;justify-content:center}
+@media (min-width:900px){ .mobile-menu,.menu-backdrop{display:none!important} }
+body.menu-open{overflow:hidden}
 .badge-edu{border-radius:999px;background:rgba(65,177,122,.12);color:var(--mint);font-family:var(--font-head);font-size:.6875rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.3125rem .75rem}
 
 /* ==========================================================================
@@ -617,9 +665,25 @@ a{color:inherit}
       <a href="#pro-koho">Je to pro tebe?</a>
       <a href="#expert">Kdo tě povede</a>
     </nav>
-    <a class="btn btn-primary on-mint" href="index.html">Vstoupit do Edu</a>
+    <a class="btn btn-primary on-mint hdr-cta" href="index.html">Vstoupit do Edu</a>
+    <button type="button" class="burger" id="burger" aria-label="Otevřít menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
+
+<!-- mobilní menu: vyjíždí pod plovoucí hlavičkou, zavře se odkazem, křížkem, Esc nebo klepnutím mimo -->
+<div class="menu-backdrop" id="menu-backdrop" hidden></div>
+<nav class="mobile-menu" id="mobile-menu" aria-label="Mobilní navigace" hidden>
+  <a href="#jak">Jak ti Edu pomůže<span aria-hidden="true">→</span></a>
+  <a href="#videa">Pusť si ukázku<span aria-hidden="true">→</span></a>
+  <a href="#pro-koho">Je to pro tebe?<span aria-hidden="true">→</span></a>
+  <a href="#expert">Kdo tě povede<span aria-hidden="true">→</span></a>
+  <a class="btn btn-primary on-mint" href="index.html">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+    Vstoupit do Edu zdarma
+  </a>
+</nav>
 
 <div style="position:relative">
   <div class="blobs" aria-hidden="true"><span class="b1"></span><span class="b2"></span></div>
@@ -1027,6 +1091,35 @@ a{color:inherit}
 const hdr = document.querySelector('.site-header');
 const setHdr = () => hdr.classList.toggle('scrolled', scrollY > 24);
 addEventListener('scroll', setHdr, {passive:true}); setHdr();
+
+/* ---------- hamburger menu (mobil) ---------- */
+(function(){
+  const burger = document.getElementById('burger'), menu = document.getElementById('mobile-menu'),
+        backdrop = document.getElementById('menu-backdrop');
+  if (!burger || !menu) return;
+  let open = false;
+  function setOpen(v){
+    open = v;
+    burger.setAttribute('aria-expanded', String(v));
+    burger.setAttribute('aria-label', v ? 'Zavřít menu' : 'Otevřít menu');
+    document.body.classList.toggle('menu-open', v);
+    if (v){
+      menu.hidden = false; backdrop.hidden = false;
+      requestAnimationFrame(() => { menu.classList.add('open'); backdrop.classList.add('open'); });
+      hdr.classList.add('scrolled');                       /* kapsle i nahoře, ať menu navazuje */
+      menu.querySelector('a').focus({preventScroll:true});
+    } else {
+      menu.classList.remove('open'); backdrop.classList.remove('open');
+      setTimeout(() => { if (!open){ menu.hidden = true; backdrop.hidden = true; setHdr(); } }, 300);
+      burger.focus({preventScroll:true});
+    }
+  }
+  burger.addEventListener('click', () => setOpen(!open));
+  backdrop.addEventListener('click', () => setOpen(false));
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
+  addEventListener('keydown', e => { if (e.key === 'Escape' && open) setOpen(false); });
+  matchMedia('(min-width: 900px)').addEventListener('change', e => { if (e.matches && open) setOpen(false); });
+})();
 
 /* ---------- hero video: zvuk na vyžádání ---------- */
 const hv = document.getElementById('hero-video');
