@@ -382,9 +382,14 @@ a{color:inherit}
 @media (prefers-reduced-motion:reduce){ .gm-line::after,.gm-bridge{transition:none} }
 
 /* 3 · ukázka lekce: body vlevo, video na výšku vpravo */
-/* text vlevo (2/3), video v pravé třetině; nadpis zůstává ve svém sloupci */
+/* text vlevo, video vpravo na 80 % výšky okna; nadpis zůstává ve svém sloupci */
 .lesson{display:grid;gap:2rem;align-items:center}
-@media (min-width:900px){ .lesson{grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:3rem} }
+@media (min-width:900px){
+  .lesson{grid-template-columns:minmax(0,1fr) auto;gap:3rem}
+  #s3{padding-block:1.5rem}
+  #s3 .reel{height:80dvh;width:auto;max-width:none;aspect-ratio:9/16}
+  #s3 .reel-cap{margin-top:.5rem}
+}
 .lesson-text .ticks{margin-top:1.75rem}
 .lesson-text h2{max-width:16ch}
 .ticks{display:grid;gap:.875rem}
@@ -395,7 +400,6 @@ a{color:inherit}
   border-radius:1.5rem;overflow:hidden;background:#1F2344;box-shadow:var(--shadow-card);
   isolation:isolate;-webkit-mask-image:-webkit-radial-gradient(#fff,#000);transform:translateZ(0);
 }
-@media (min-width:900px){ .reel{max-width:min(19rem,calc((100dvh - 14rem) * 9 / 16))} }
 .reel img,.reel video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .reel video{background:#000}
 .reel .bigplay{
@@ -460,6 +464,7 @@ a{color:inherit}
 /* 8 · balíčky: poznámka pod nimi */
 .plans-note{margin-top:1.25rem;text-align:center;font-size:.8125rem;line-height:1.5;color:var(--ink-45)}
 
+html.paged{scroll-snap-type:none}
 @media (max-width:767px){
   .use,.gain,.stop{padding:1.125rem}
   .big-kpi{padding:1.375rem 1.25rem}
@@ -756,25 +761,55 @@ document.getElementById('reel-play').addEventListener('click', () => {
   v.play().catch(() => {});
 });
 
-/* ---------- šipky / mezerník listují snímky (jako v PowerPointu) ---------- */
-function slideIndexInView(){
-  const y = window.scrollY + innerHeight / 3;
-  const i = slides.findIndex(s => y < s.offsetTop + s.offsetHeight);
-  return i < 0 ? slides.length - 1 : i;
+/* ---------- listování po snímcích (jako v PowerPointu) ----------
+   Na počítači jedno gesto kolečkem / trackpadem = přesně jeden snímek.
+   CSS přichytávání samo selže, když je snímek vyšší než okno, a setrvačnost
+   trackpadu umí zastavit mezi snímky. Na dotyku necháváme nativní přichytávání. */
+const pager = matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine)');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function currentIndex(){
+  let best = 0, d = Infinity;
+  slides.forEach((s, i) => { const x = Math.abs(s.getBoundingClientRect().top); if (x < d){ d = x; best = i; } });
+  return best;
 }
+let locked = false, lockStart = 0, lastWheel = 0, accum = 0;
+function goTo(i){
+  i = Math.max(0, Math.min(slides.length - 1, i));
+  locked = true; lockStart = performance.now(); accum = 0;
+  slides[i].scrollIntoView({behavior: reduceMotion ? 'instant' : 'smooth', block: 'start'});
+}
+function applyPagerMode(){ document.documentElement.classList.toggle('paged', pager.matches); }
+pager.addEventListener('change', applyPagerMode); applyPagerMode();
+
+addEventListener('wheel', e => {
+  if (!pager.matches || e.ctrlKey) return;                 /* ctrl = zoom gestem */
+  if (e.target instanceof Element && e.target.closest('video')) return;
+  const now = performance.now(), gap = now - lastWheel; lastWheel = now;
+  const i = currentIndex(), s = slides[i], r = s.getBoundingClientRect();
+  /* snímek vyšší než okno: nejdřív ho nechat doscrollovat na kraj */
+  if (s.offsetHeight > innerHeight + 4){
+    if (e.deltaY > 0 && r.bottom > innerHeight + 2) return;
+    if (e.deltaY < 0 && r.top < -2) return;
+  }
+  e.preventDefault();
+  if (locked){
+    /* zámek drží, dokud neutichne setrvačnost trackpadu */
+    if (now - lockStart > 650 && gap > 160) locked = false; else return;
+  }
+  if (gap > 220) accum = 0;
+  accum += e.deltaY;
+  if (Math.abs(accum) < 30) return;
+  goTo(i + (accum > 0 ? 1 : -1));
+}, {passive: false});
+
 document.addEventListener('keydown', e => {
   if (e.target instanceof Element && e.target.closest('video, input, textarea')) return;
-  if (['ArrowDown','PageDown',' ','ArrowRight'].includes(e.key)){
-    e.preventDefault();
-    const i = slideIndexInView();
-    (slides[i + 1] || slides[i]).scrollIntoView({behavior:'smooth'});
-  }
-  if (['ArrowUp','PageUp','ArrowLeft'].includes(e.key)){
-    e.preventDefault();
-    const i = slideIndexInView();
-    (slides[i - 1] || slides[0]).scrollIntoView({behavior:'smooth'});
-  }
+  if (['ArrowDown','PageDown',' ','ArrowRight'].includes(e.key)){ e.preventDefault(); goTo(currentIndex() + 1); }
+  if (['ArrowUp','PageUp','ArrowLeft'].includes(e.key)){ e.preventDefault(); goTo(currentIndex() - 1); }
+  if (e.key === 'Home'){ e.preventDefault(); goTo(0); }
+  if (e.key === 'End'){ e.preventDefault(); goTo(slides.length - 1); }
 });
+setInterval(() => { if (locked && performance.now() - lockStart > 1400) locked = false; }, 400);  /* pojistka */
 </script>
 </body>
 </html>
