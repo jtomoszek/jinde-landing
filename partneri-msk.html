@@ -426,19 +426,28 @@ a{color:inherit}
 .insight svg{flex:none;width:1.375rem;height:1.375rem;margin-top:.15rem;color:var(--mint)}
 .source{margin-top:.875rem;font-size:.75rem;line-height:1.5;color:var(--ink-45)}
 
-/* sloupcový graf vedle prvního čísla */
-.count-chart{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;max-width:34rem}
-.weeks{flex:none;margin:0;text-align:center}
-.bars{display:flex;align-items:flex-end;gap:.375rem;height:5.5rem;padding-bottom:1.125rem;position:relative;border-bottom:1px solid rgba(31,35,68,.14)}
-.bar{position:relative;width:1.5rem;height:var(--h);border-radius:.375rem .375rem .125rem .125rem;background:linear-gradient(to top,var(--mint),#7FE0B0);
-  transform:scaleY(0);transform-origin:bottom;transition:transform .9s cubic-bezier(.22,1,.36,1) calc(var(--i) * .12s + .15s)}
-.bar:last-child{background:linear-gradient(to top,var(--mint-dark),var(--mint))}
-.bar i{position:absolute;left:50%;top:calc(100% + .3rem);transform:translateX(-50%);font-style:normal;font-size:.625rem;font-weight:600;color:var(--ink-45);white-space:nowrap}
-.social.in .bar{transform:scaleY(1)}
-.weeks figcaption{margin-top:.5rem;font-size:.6875rem;color:var(--ink-45);display:grid;gap:.25rem;justify-items:center}
-.weeks figcaption .todo{margin:0}
-@media (max-width:479px){ .count-chart{flex-direction:column;align-items:flex-start} }
-@media (prefers-reduced-motion:reduce){ .bar{transition:none;transform:none} }
+/* křivka růstu vedle prvního čísla: čára se vykreslí zleva doprava a vystřelí nahoru */
+.count-chart{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;max-width:36rem}
+.curve{flex:none;margin:0;width:15rem}
+.curve svg{display:block;width:100%;height:auto;overflow:visible}
+.curve .grid{stroke:rgba(31,35,68,.1);stroke-width:1;vector-effect:non-scaling-stroke}
+.curve .area{fill:url(#curve-fill);opacity:0;transition:opacity .8s ease 1.1s}
+.curve .line{fill:none;stroke:var(--mint);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 1.6s cubic-bezier(.65,0,.35,1) .15s}
+.curve .dot{fill:#fff;stroke:var(--mint);stroke-width:3.5;opacity:0;transform-box:fill-box;transform-origin:center;transition:opacity .3s ease 1.65s}
+.curve .pulse{fill:var(--mint);opacity:0;transform-box:fill-box;transform-origin:center}
+.curve .tip{font-family:var(--font-head);font-size:13px;font-weight:800;fill:var(--mint-dark);opacity:0;transition:opacity .4s ease 1.75s}
+.social.in .curve .line{stroke-dashoffset:0}
+.social.in .curve .area,.social.in .curve .dot,.social.in .curve .tip{opacity:1}
+.social.in .curve .pulse{animation:curve-pulse 2s ease-out 1.8s infinite}
+@keyframes curve-pulse{0%{opacity:.45;transform:scale(1)}100%{opacity:0;transform:scale(3.2)}}
+.curve figcaption{margin-top:.625rem;font-size:.6875rem;color:var(--ink-45);display:flex;flex-wrap:wrap;gap:.25rem .375rem;align-items:center}
+.curve figcaption .todo{margin:0}
+@media (max-width:479px){ .count-chart{flex-direction:column;align-items:flex-start} .curve{width:100%;max-width:18rem} }
+@media (prefers-reduced-motion:reduce){
+  .curve .line,.curve .area,.curve .dot,.curve .tip{transition:none}
+  .social.in .curve .pulse{animation:none}
+}
 
 /* telefon kolem příspěvku */
 .post-phone{
@@ -634,9 +643,9 @@ html.paged{scroll-snap-type:none}
                 <span class="lbl">nových registrovaných uživatelů za poslední měsíc</span>
                 <small>Měsíc: <span class="todo">doplnit</span></small>
               </div>
-              <figure class="weeks" aria-label="Registrace po týdnech za poslední měsíc">
-                <div class="bars" id="week-bars"></div>
-                <figcaption>registrace po týdnech <span class="todo">doplnit data</span></figcaption>
+              <figure class="curve" aria-label="Růst registrací během posledního měsíce">
+                <svg id="reg-curve" viewBox="0 0 240 120" aria-hidden="true"></svg>
+                <figcaption>růst registrací za měsíc <span class="todo">doplnit data</span></figcaption>
               </figure>
             </div>
             <div class="count">
@@ -815,14 +824,36 @@ if ('IntersectionObserver' in window){
   io.observe(gm);
 })();
 
-/* ---------- graf registrací po týdnech ----------
-   TODO: nahradit skutečnými čísly. Teď je to ilustrační rozpad 1 000 registrací. */
-const WEEKS = [180, 230, 270, 320];
+/* ---------- křivka růstu registrací ----------
+   TODO: nahradit skutečnými čísly. Teď je to ilustrační rozpad 1 000 registrací
+   po týdnech; křivka ukazuje jejich kumulativní součet (od nuly po 1 000). */
+const WEEKS = [80, 170, 290, 460];
 (function(){
-  const box = document.getElementById('week-bars'); if (!box) return;
-  const max = Math.max(...WEEKS);
-  box.innerHTML = WEEKS.map((v, i) =>
-    `<span class="bar" style="--h:${Math.round(v / max * 100)}%;--i:${i}" title="${v} registrací"><i>${i + 1}. t</i></span>`).join('');
+  const svg = document.getElementById('reg-curve'); if (!svg) return;
+  const W = 240, H = 120, pad = 8;
+  const cum = [0]; WEEKS.forEach(v => cum.push(cum[cum.length - 1] + v));
+  const max = cum[cum.length - 1];
+  const pts = cum.map((v, i) => [pad + i * (W - 2 * pad) / (cum.length - 1), H - pad - v / max * (H - 2 * pad - 10)]);
+  /* hladká křivka (Catmull-Rom → Bézier) */
+  let d = `M${pts[0][0]},${pts[0][1]}`;
+  for (let i = 0; i < pts.length - 1; i++){
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    d += ` C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+  }
+  const last = pts[pts.length - 1];
+  const grid = [0.25, 0.5, 0.75].map(f => `<line class="grid" x1="0" x2="${W}" y1="${(H * f).toFixed(1)}" y2="${(H * f).toFixed(1)}"/>`).join('');
+  svg.innerHTML = `<defs><linearGradient id="curve-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#41B17A" stop-opacity=".32"/><stop offset="1" stop-color="#41B17A" stop-opacity="0"/></linearGradient></defs>
+    ${grid}
+    <path class="area" d="${d} L${last[0]},${H} L${pts[0][0]},${H} Z"/>
+    <path class="line" d="${d}"/>
+    <circle class="pulse" cx="${last[0]}" cy="${last[1]}" r="5"/>
+    <circle class="dot" cx="${last[0]}" cy="${last[1]}" r="5"/>
+    <text class="tip" x="${last[0] - 8}" y="${last[1] - 12}" text-anchor="end">${max.toLocaleString('cs-CZ')}</text>`;
+  const line = svg.querySelector('.line');
+  line.style.setProperty('--len', Math.ceil(line.getTotalLength() + 2));
 })();
 
 /* ---------- snímek Zájem: čísla naběhnou od nuly, když snímek vjede do obrazu ---------- */
