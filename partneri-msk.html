@@ -337,19 +337,71 @@ a{color:inherit}
   font-family:var(--font-head);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--mint);
 }
 
-/* 2 · problém: tři páry „má / neumí" */
-.gaps{display:grid;gap:.75rem;margin-top:1.75rem}
-@media (min-width:768px){ .gaps{grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem} }
-.gap{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:1.375rem}
-.gap .has{display:block;font-family:var(--font-head);font-size:1.0625rem;font-weight:800;line-height:1.3}
-.gap .lacks{display:block;margin-top:.375rem;font-size:.9375rem;line-height:1.5;color:var(--ink-60)}
-.gap .lacks::before{content:"";display:inline-block;width:.5rem;height:.5rem;border-radius:50%;background:#F28482;margin-right:.5rem;vertical-align:middle}
-.answer{
-  margin-top:1.5rem;display:flex;gap:.875rem;align-items:center;
-  background:rgba(65,177,122,.1);border:1px solid rgba(65,177,122,.3);border-radius:var(--radius);
-  padding:1rem 1.25rem;font-family:var(--font-head);font-weight:700;font-size:1.0625rem;line-height:1.4;
+/* 2 · problém: „mapa mezer". Vlevo co člověk má, vpravo co mu chybí, mezi tím
+   přerušovaná mezera. Po vjezdu snímku ji postupně přemostí zelený pruh Jinde. */
+.accent-mint{color:var(--mint)}
+.gapmap{margin-top:2.25rem}
+.gm-head{display:none}
+.gm-rows{display:grid;gap:.875rem}
+.gm-row{
+  display:grid;gap:.625rem;align-items:center;
+  background:#fff;border:1px solid var(--line);border-radius:1.25rem;padding:1.125rem 1.25rem;
+  box-shadow:0 14px 40px -26px rgba(31,35,68,.35);
 }
-.answer svg{flex:none;width:1.5rem;height:1.5rem;color:var(--mint)}
+.gm-has{font-family:var(--font-head);font-size:clamp(1.125rem,2.6vw,1.5rem);font-weight:800;letter-spacing:-.02em;color:var(--indigo)}
+.gm-lacks{
+  font-family:var(--font-head);font-size:clamp(1rem,2.2vw,1.25rem);font-weight:700;letter-spacing:-.01em;
+  color:var(--ink-45);display:flex;align-items:center;gap:.5rem;
+}
+.gm-lacks::before{content:"";flex:none;width:.625rem;height:.625rem;border-radius:50%;background:#F28482;box-shadow:0 0 0 4px rgba(242,132,130,.18)}
+.gm-link{position:relative;display:flex;align-items:center;justify-content:center;min-height:2.75rem}
+/* šedá přerušovaná mezera + zelená výplň, která se rozroste */
+.gm-line{
+  position:absolute;left:0;right:0;top:50%;height:4px;transform:translateY(-50%);border-radius:4px;
+  background:repeating-linear-gradient(90deg,rgba(31,35,68,.18) 0 8px,transparent 8px 15px);
+}
+.gm-line::after{
+  content:"";position:absolute;inset:0;border-radius:3px;background:var(--mint);
+  transform:scaleX(0);transform-origin:left center;
+  transition:transform .8s cubic-bezier(.65,0,.35,1) calc(var(--i) * .35s + .25s);
+}
+.gm-bridge{
+  position:relative;z-index:1;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:.375rem;
+  background:var(--mint);color:#fff;border-radius:999px;padding:.5625rem 1.125rem;
+  font-size:.9375rem;font-weight:600;box-shadow:0 10px 24px -8px rgba(65,177,122,.6);
+  opacity:0;transform:scale(.6);
+  transition:opacity .4s ease calc(var(--i) * .35s + .75s),transform .5s cubic-bezier(.34,1.56,.64,1) calc(var(--i) * .35s + .75s);
+}
+.gm-bridge b{font-family:var(--font-head);font-weight:800}
+.gapmap.in .gm-line::after{transform:scaleX(1)}
+.gapmap.in .gm-bridge{opacity:1;transform:scale(1)}
+
+/* mobil: řádek pod sebou, most svisle mezi břehy */
+@media (max-width:767px){
+  .gm-row{justify-items:start}
+  .gm-link{width:100%;min-height:2.5rem;justify-content:flex-start;padding-left:.125rem}
+  .gm-line{left:.3125rem;right:auto;top:-.25rem;bottom:-.25rem;width:3px;height:auto;transform:none;
+    background:repeating-linear-gradient(180deg,rgba(31,35,68,.18) 0 6px,transparent 6px 11px)}
+  .gm-line::after{transform:scaleY(0);transform-origin:center top}
+  .gapmap.in .gm-line::after{transform:scaleY(1)}
+  .gm-bridge{margin-left:1rem}
+}
+/* desktop: tři sloupce, nad nimi popisky */
+@media (min-width:768px){
+  .gm-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(14rem,1.1fr) minmax(0,1fr);gap:1.5rem;padding:0 1.5rem .625rem;
+    font-family:var(--font-head);font-size:.6875rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-45)}
+  .gm-head span:last-child{text-align:right}
+  .gm-row{grid-template-columns:minmax(0,1fr) minmax(14rem,1.1fr) minmax(0,1fr);gap:1.5rem;padding:1.375rem 1.5rem}
+  .gm-lacks{justify-content:flex-end;text-align:right}
+}
+.gm-answer{
+  margin-top:1.75rem;text-wrap:balance;font-family:var(--font-head);font-size:clamp(1.125rem,2.6vw,1.5rem);font-weight:800;
+  letter-spacing:-.01em;line-height:1.35;max-width:36rem;
+}
+@media (prefers-reduced-motion:reduce){
+  .gm-line::after,.gm-bridge{transition:none}
+}
 
 /* 3 · ukázka lekce: body vlevo, video na výšku vpravo */
 /* text vlevo (2/3), video v pravé třetině; nadpis zůstává ve svém sloupci */
@@ -430,41 +482,8 @@ a{color:inherit}
 /* 8 · balíčky: poznámka pod nimi */
 .plans-note{margin-top:1.25rem;text-align:center;font-size:.8125rem;line-height:1.5;color:var(--ink-45)}
 
-/* ==========================================================================
-   Režim řečníka: doprovodná řeč u každého snímku (klávesa N nebo tlačítko)
-   ========================================================================== */
-.notes{
-  display:none;margin-top:1.75rem;
-  background:#1F2344;color:rgba(255,255,255,.88);border-radius:var(--radius);
-  padding:1.125rem 1.25rem;font-size:.9375rem;line-height:1.65;text-align:left;
-  box-shadow:0 20px 50px -20px rgba(31,35,68,.5);
-}
-.notes::before{content:"Doprovodná řeč";display:block;margin-bottom:.5rem;font-family:var(--font-head);font-size:.6875rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7FE0B0}
-.notes p + p{margin-top:.625rem}
-body.speaker .notes{display:block}
-body.speaker .slide{min-height:auto;padding-block:4rem}
-body.speaker{--notes-on:1}
-html:has(body.speaker){scroll-snap-type:none}
-
-.speaker-toggle{
-  position:fixed;left:.875rem;bottom:.875rem;z-index:60;
-  display:inline-flex;align-items:center;gap:.5rem;
-  border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);
-  padding:.5rem .875rem;min-height:2.5rem;font-family:var(--font-body);font-size:.8125rem;font-weight:600;color:var(--ink-70);cursor:pointer;
-  box-shadow:0 10px 24px -12px rgba(31,35,68,.35);
-}
-.speaker-toggle svg{width:1rem;height:1rem}
-.speaker-toggle kbd{font-family:var(--font-head);font-size:.6875rem;border:1px solid var(--line);border-radius:.375rem;padding:0 .3rem;color:var(--ink-45)}
-body.speaker .speaker-toggle{background:#1F2344;color:#fff;border-color:#1F2344}
-body.speaker .speaker-toggle kbd{color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.25)}
-@media (max-width:639px){              /* mobil: jen kulatá ikona, ať nepřekrývá obsah */
-  .speaker-toggle{width:2.75rem;height:2.75rem;padding:0;justify-content:center;left:.625rem;bottom:.625rem}
-  .speaker-toggle span,.speaker-toggle kbd{display:none}
-}
-@media print{ .speaker-toggle,.deck-nav{display:none} }
-
 @media (max-width:767px){
-  .gap,.use,.gain,.stop{padding:1.125rem}
+  .use,.gain,.stop{padding:1.125rem}
   .big-kpi{padding:1.375rem 1.25rem}
 }
 </style>
@@ -485,10 +504,6 @@ body.speaker .speaker-toggle kbd{color:rgba(255,255,255,.6);border-color:rgba(25
   <a href="#s9" aria-label="Snímek 9, závěr"></a>
 </nav>
 
-<button type="button" class="speaker-toggle" id="speaker-toggle" aria-pressed="false" aria-label="Poznámky řečníka" title="Poznámky řečníka (N)">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-  <span>Poznámky řečníka</span><kbd>N</kbd>
-</button>
 
 <main>
 
@@ -506,10 +521,6 @@ body.speaker .speaker-toggle kbd{color:rgba(255,255,255,.6);border-color:rgba(25
         <img src="media/jina-expert.jpg" alt="Jina Malecová" width="120" height="120">
         <p><strong>Jina Malecová</strong>zakladatelka Jinde · HR manažerka</p>
       </div>
-      <div class="notes">
-        <p>„Každá firma potřebuje lidi, kteří dokážou využít své zkušenosti, chtějí se rozvíjet a vědí, proč se o danou práci ucházejí. Takoví lidé ale potřebují také přípravu a příležitost.</p>
-        <p>Proto vzniká Jinde. Pomáháme lidem připravit se na pracovní život a postupně budujeme komunitu, kterou chceme v další fázi propojit se zaměstnavateli. Dnes vás zvu, abyste se stali partnery jejího růstu.“</p>
-      </div>
     </div>
     <p class="scroll-hint" aria-hidden="true">
       posun dolů
@@ -517,24 +528,36 @@ body.speaker .speaker-toggle kbd{color:rgba(255,255,255,.6);border-color:rgba(25
     </p>
   </section>
 
-  <!-- ===== 2 · PROBLÉM ===== -->
+  <!-- ===== 2 · PROBLÉM: mezera mezi tím, co člověk má, a tím, co umí ukázat ===== -->
   <section class="slide" id="s2" aria-labelledby="s2-h">
     <div class="slide-inner">
       <p class="eyebrow">Problém, který známe z praxe</p>
-      <h2 id="s2-h">Dobrý kandidát nemusí umět ukázat, co v něm je.</h2>
-      <div class="gaps">
-        <div class="gap"><span class="has">Zkušenosti má.</span><span class="lacks">Neumí je představit.</span></div>
-        <div class="gap"><span class="has">Chce změnu.</span><span class="lacks">Neví, kde začít.</span></div>
-        <div class="gap"><span class="has">Nastupuje do práce.</span><span class="lacks">Neví, jak se připravit.</span></div>
+      <h2 id="s2-h">Dobrý kandidát nemusí umět ukázat, <span class="accent-mint">co v něm je.</span></h2>
+
+      <div class="gapmap" id="gapmap">
+        <div class="gm-head" aria-hidden="true">
+          <span>Co člověk má</span><span></span><span>Co mu chybí</span>
+        </div>
+        <ol class="gm-rows">
+          <li class="gm-row" style="--i:0">
+            <span class="gm-has">Zkušenosti má.</span>
+            <span class="gm-link"><i class="gm-line"></i><span class="gm-bridge"><b>Jinde</b> naučí je pojmenovat</span></span>
+            <span class="gm-lacks">Neumí je představit.</span>
+          </li>
+          <li class="gm-row" style="--i:1">
+            <span class="gm-has">Chce změnu.</span>
+            <span class="gm-link"><i class="gm-line"></i><span class="gm-bridge"><b>Jinde</b> ukáže první krok</span></span>
+            <span class="gm-lacks">Neví, kde začít.</span>
+          </li>
+          <li class="gm-row" style="--i:2">
+            <span class="gm-has">Nastupuje do práce.</span>
+            <span class="gm-link"><i class="gm-line"></i><span class="gm-bridge"><b>Jinde</b> připraví na nástup</span></span>
+            <span class="gm-lacks">Neví, jak se připravit.</span>
+          </li>
+        </ol>
       </div>
-      <p class="answer">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        Jinde pomáhá lidem udělat další pracovní krok s větší jistotou.
-      </p>
-      <div class="notes">
-        <p>„Za dvanáct let v HR jsem potkávala lidi, kteří měli co nabídnout, ale neuměli své zkušenosti vysvětlit nebo si vybrat odpovídající práci.</p>
-        <p>Právě na tyto situace se zaměřujeme. Učíme lidi pojmenovat, co umějí, porozumět očekáváním zaměstnavatelů a připravit se na pohovor i nástup. To může být přínosem pro člověka i firmu, se kterou se nakonec potká.“</p>
-      </div>
+
+      <p class="gm-answer">Jinde pomáhá lidem udělat další pracovní krok <span class="accent-mint">s&nbsp;větší jistotou.</span></p>
     </div>
   </section>
 
@@ -562,11 +585,6 @@ body.speaker .speaker-toggle kbd{color:rgba(255,255,255,.6);border-color:rgba(25
           <figcaption class="reel-cap">Ukázka skutečné lekce z Jinde Edu</figcaption>
         </figure>
       </div>
-      <div class="notes">
-        <p>„Jinde Edu je bezplatné kariérní vzdělávání. Člověk si vybere svou situaci a dostane obsah, který mu pomůže řešit konkrétní otázky.</p>
-        <p>Jak představit zkušenosti při změně oboru? Jak se připravit na pohovor? Co udělat před nástupem do nové práce? Videa jsou krátká a doplněná o kroky, které může člověk rovnou použít.</p>
-        <p>Ukážu vám jednu lekci, abyste viděli, jak to vypadá v praxi.“</p>
-      </div>
     </div>
   </section>
 
@@ -592,10 +610,6 @@ body.speaker .speaker-toggle kbd{color:rgba(255,255,255,.6);border-color:rgba(25
         Registrace a profesní dotazník nám pomáhají poznat zkušenosti lidí a to, jakou práci hledají.
       </p>
       <p class="source">Zdroj: údaje týmu Jinde. Zhlédnutí nejsou počet unikátních lidí.</p>
-      <div class="notes">
-        <p>„Projekt už běží a lidé se zapojují. Za poslední měsíc jsme získali tisíc nových registrovaných uživatelů. Jedno vydání na sociálních sítích má přibližně sto tisíc zhlédnutí.</p>
-        <p>Jsou to dva různé výsledky: obsah přitahuje pozornost a část lidí přichází do Edu. Díky profesním dotazníkům navíc postupně poznáváme, jaké zkušenosti mají a o jakou práci stojí. Na tom chceme stavět další růst.“</p>
-      </div>
     </div>
   </section>
 
@@ -623,10 +637,6 @@ body.speaker .speaker-toggle kbd{color:rgba(255,255,255,.6);border-color:rgba(25
         </div>
       </div>
       <p class="outcome">Vaše podpora pomůže více lidem objevit vzdělávání a připravit se na další pracovní krok.</p>
-      <div class="notes">
-        <p>„Teď chceme dostat Jinde k dalším lidem v Moravskoslezském kraji. Právě na propagaci a získávání uživatelů půjde hlavní část partnerské podpory.</p>
-        <p>Pro lidi to znamená možnost objevit bezplatné vzdělávání. Pro projekt je to cesta k širší komunitě s různými profesemi a zkušenostmi. A pro budoucí pracovní inzerci základ publika, ve kterém budou firmy moci hledat vhodné zájemce.“</p>
-      </div>
     </div>
   </section>
 
@@ -653,11 +663,6 @@ body.speaker .speaker-toggle kbd{color:rgba(255,255,255,.6);border-color:rgba(25
         </div>
       </div>
       <p class="fineprint">Inzerce bude otevřená všem firmám. Partneři, kteří podpoří růst projektu už dnes, získají zvýhodnění podle svého balíčku.</p>
-      <div class="notes">
-        <p>„Naším cílem je sto tisíc uživatelů Edu v kraji. Je to naše ambice, ne dnešní velikost komunity.</p>
-        <p>Na tuto fázi chceme navázat pracovní inzercí. Záměrem je pomoci lidem objevovat nabídky, které odpovídají jejich zkušenostem a zájmům, a firmám oslovovat relevantnější publikum.</p>
-        <p>Inzerce bude otevřená všem firmám. Partneři, kteří podpoří růst projektu už dnes, získají zvýhodnění podle svého balíčku.“</p>
-      </div>
     </div>
   </section>
 
@@ -682,11 +687,6 @@ body.speaker .speaker-toggle kbd{color:rgba(255,255,255,.6);border-color:rgba(25
           <strong>Budoucí výhody</strong>
           <p>Přednostní přístup nebo zvýhodněná inzerce podle balíčku po jejím spuštění.</p>
         </div>
-      </div>
-      <div class="notes">
-        <p>„Partnerství má přínos už nyní. Vaši firmu představíme jako jednu z těch, které pomáhají zpřístupňovat kariérní vzdělávání v regionu.</p>
-        <p>Podle rozsahu spolupráce můžete být uvedeni mezi partnery nebo spojit svou značku s konkrétním vzdělávacím okruhem.</p>
-        <p>Druhou částí jsou výhody při spuštění pracovní inzerce. Ty navazují na budoucí fázi projektu; současná prezentace značky začne už během partnerství.“</p>
       </div>
     </div>
   </section>
@@ -728,11 +728,6 @@ body.speaker .speaker-toggle kbd{color:rgba(255,255,255,.6);border-color:rgba(25
         </article>
       </div>
       <p class="plans-note">Konkrétní umístění značky, délku prezentace i podmínky budoucích výhod popíšeme v partnerské dohodě.</p>
-      <div class="notes">
-        <p>„Připravili jsme tři možnosti spolupráce. Parťák podpoří projekt a získá základní prezentaci značky. Průkopník propojí svou firmu s vybraným vzdělávacím tématem a získá přednostní přístup k budoucí inzerci.</p>
-        <p>Zakládající partner získá nejvýraznější spojení s vybraným okruhem a polovinu ceny pracovní inzerce během prvního roku po jejím spuštění.</p>
-        <p>Konkrétní umístění značky, délku prezentace i podmínky budoucích výhod popíšeme v partnerské dohodě.“</p>
-      </div>
     </div>
   </section>
 
@@ -746,11 +741,6 @@ body.speaker .speaker-toggle kbd{color:rgba(255,255,255,.6);border-color:rgba(25
         <p><strong>Jina Malecová</strong>zakladatelka projektu</p>
       </div>
       <img class="logo" src="https://dev.besthr.cz/jinde.png" alt="Jinde" width="137" height="34">
-      <div class="notes">
-        <p>„Dnes vám nabízíme možnost podpořit projekt, který lidem pomáhá připravit se na práci a postupně vytváří prostor pro jejich propojení s firmami.</p>
-        <p>Máme první výsledky, zkušenosti z HR a jasný směr. S vaší podporou můžeme oslovit další lidi v regionu.</p>
-        <p>Pojďme vybrat podobu partnerství, která bude dávat smysl vaší firmě a pomůže Jinde růst.“</p>
-      </div>
     </div>
   </section>
 
@@ -771,6 +761,14 @@ if ('IntersectionObserver' in window){
   slides.forEach(s => io.observe(s));
 }
 
+/* ---------- snímek Problém: mosty Jinde najedou, když je snímek vidět ---------- */
+(function(){
+  const gm = document.getElementById('gapmap'); if (!gm) return;
+  if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches){ gm.classList.add('in'); return; }
+  const io = new IntersectionObserver(([e]) => { if (e.isIntersecting){ gm.classList.add('in'); io.disconnect(); } }, {threshold:.45});
+  io.observe(gm);
+})();
+
 /* ---------- ukázka lekce: přehraje se přímo ve snímku, se zvukem ---------- */
 document.getElementById('reel-play').addEventListener('click', () => {
   const reel = document.getElementById('reel');
@@ -783,20 +781,6 @@ document.getElementById('reel-play').addEventListener('click', () => {
   v.play().catch(() => {});
 });
 
-/* ---------- režim řečníka: N nebo tlačítko, pamatuje si volbu ---------- */
-const sp = document.getElementById('speaker-toggle');
-function setSpeaker(on){
-  document.body.classList.toggle('speaker', on);
-  sp.setAttribute('aria-pressed', String(on));
-  try { localStorage.setItem('jinde-msk-speaker', on ? '1' : '0'); } catch(e){}
-}
-sp.addEventListener('click', () => {
-  const cur = slides[slideIndexInView()];
-  setSpeaker(!document.body.classList.contains('speaker'));
-  cur.scrollIntoView({behavior:'instant', block:'start'});   /* zůstat na stejném snímku */
-});
-try { if (localStorage.getItem('jinde-msk-speaker') === '1') setSpeaker(true); } catch(e){}
-
 /* ---------- šipky / mezerník listují snímky (jako v PowerPointu) ---------- */
 function slideIndexInView(){
   const y = window.scrollY + innerHeight / 3;
@@ -805,7 +789,6 @@ function slideIndexInView(){
 }
 document.addEventListener('keydown', e => {
   if (e.target instanceof Element && e.target.closest('video, input, textarea')) return;
-  if (e.key === 'n' || e.key === 'N'){ sp.click(); return; }
   if (['ArrowDown','PageDown',' ','ArrowRight'].includes(e.key)){
     e.preventDefault();
     const i = slideIndexInView();
