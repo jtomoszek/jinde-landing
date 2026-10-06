@@ -337,71 +337,49 @@ a{color:inherit}
   font-family:var(--font-head);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--mint);
 }
 
-/* 2 · problém: „mapa mezer". Vlevo co člověk má, vpravo co mu chybí, mezi tím
-   přerušovaná mezera. Po vjezdu snímku ji postupně přemostí zelený pruh Jinde. */
+/* 2 · problém, minimalisticky: tři řádky oddělené vlasovou linkou, bez karet.
+   Vlevo co člověk má, vpravo co mu chybí. Tenká linka mezi nimi se po vjezdu
+   snímku dotáhne zeleně a uprostřed se objeví, co udělá Jinde. */
 .accent-mint{color:var(--mint)}
-.gapmap{margin-top:2.25rem}
-.gm-head{display:none}
-.gm-rows{display:grid;gap:.875rem}
+.gapmap{margin-top:2.75rem}
+.gm-rows{display:grid}
 .gm-row{
-  display:grid;gap:.625rem;align-items:center;
-  background:#fff;border:1px solid var(--line);border-radius:1.25rem;padding:1.125rem 1.25rem;
-  box-shadow:0 14px 40px -26px rgba(31,35,68,.35);
+  display:grid;gap:.5rem;align-items:center;
+  padding:1.375rem 0;border-top:1px solid rgba(31,35,68,.12);
 }
-.gm-has{font-family:var(--font-head);font-size:clamp(1.125rem,2.6vw,1.5rem);font-weight:800;letter-spacing:-.02em;color:var(--indigo)}
-.gm-lacks{
-  font-family:var(--font-head);font-size:clamp(1rem,2.2vw,1.25rem);font-weight:700;letter-spacing:-.01em;
-  color:var(--ink-45);display:flex;align-items:center;gap:.5rem;
-}
-.gm-lacks::before{content:"";flex:none;width:.625rem;height:.625rem;border-radius:50%;background:#F28482;box-shadow:0 0 0 4px rgba(242,132,130,.18)}
-.gm-link{position:relative;display:flex;align-items:center;justify-content:center;min-height:2.75rem}
-/* šedá přerušovaná mezera + zelená výplň, která se rozroste */
-.gm-line{
-  position:absolute;left:0;right:0;top:50%;height:4px;transform:translateY(-50%);border-radius:4px;
-  background:repeating-linear-gradient(90deg,rgba(31,35,68,.18) 0 8px,transparent 8px 15px);
-}
+.gm-row:last-child{border-bottom:1px solid rgba(31,35,68,.12)}
+.gm-has{font-family:var(--font-head);font-size:clamp(1.125rem,2.4vw,1.375rem);font-weight:700;letter-spacing:-.015em;color:var(--indigo)}
+.gm-lacks{font-size:clamp(.9375rem,2vw,1.0625rem);color:var(--ink-45)}
+.gm-link{display:flex;align-items:center;gap:.875rem}
+.gm-line{position:relative;flex:1 1 0;height:1px;background:rgba(31,35,68,.14)}
 .gm-line::after{
-  content:"";position:absolute;inset:0;border-radius:3px;background:var(--mint);
+  content:"";position:absolute;inset:0;background:var(--mint);
   transform:scaleX(0);transform-origin:left center;
-  transition:transform .8s cubic-bezier(.65,0,.35,1) calc(var(--i) * .35s + .25s);
+  transition:transform .7s cubic-bezier(.65,0,.35,1) calc(var(--i) * .3s + .2s);
 }
+.gm-line + .gm-bridge + .gm-line::after{transition-delay:calc(var(--i) * .3s + .75s)}
 .gm-bridge{
-  position:relative;z-index:1;white-space:nowrap;
-  display:inline-flex;align-items:center;gap:.375rem;
-  background:var(--mint);color:#fff;border-radius:999px;padding:.5625rem 1.125rem;
-  font-size:.9375rem;font-weight:600;box-shadow:0 10px 24px -8px rgba(65,177,122,.6);
-  opacity:0;transform:scale(.6);
-  transition:opacity .4s ease calc(var(--i) * .35s + .75s),transform .5s cubic-bezier(.34,1.56,.64,1) calc(var(--i) * .35s + .75s);
+  flex:none;white-space:nowrap;font-size:.875rem;color:var(--mint-dark);
+  opacity:0;transition:opacity .5s ease calc(var(--i) * .3s + .55s);
 }
 .gm-bridge b{font-family:var(--font-head);font-weight:800}
 .gapmap.in .gm-line::after{transform:scaleX(1)}
-.gapmap.in .gm-bridge{opacity:1;transform:scale(1)}
+.gapmap.in .gm-bridge{opacity:1}
 
-/* mobil: řádek pod sebou, most svisle mezi břehy */
-@media (max-width:767px){
-  .gm-row{justify-items:start}
-  .gm-link{width:100%;min-height:2.5rem;justify-content:flex-start;padding-left:.125rem}
-  .gm-line{left:.3125rem;right:auto;top:-.25rem;bottom:-.25rem;width:3px;height:auto;transform:none;
-    background:repeating-linear-gradient(180deg,rgba(31,35,68,.18) 0 6px,transparent 6px 11px)}
-  .gm-line::after{transform:scaleY(0);transform-origin:center top}
-  .gapmap.in .gm-line::after{transform:scaleY(1)}
-  .gm-bridge{margin-left:1rem}
-}
-/* desktop: tři sloupce, nad nimi popisky */
 @media (min-width:768px){
-  .gm-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(14rem,1.1fr) minmax(0,1fr);gap:1.5rem;padding:0 1.5rem .625rem;
-    font-family:var(--font-head);font-size:.6875rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-45)}
-  .gm-head span:last-child{text-align:right}
-  .gm-row{grid-template-columns:minmax(0,1fr) minmax(14rem,1.1fr) minmax(0,1fr);gap:1.5rem;padding:1.375rem 1.5rem}
-  .gm-lacks{justify-content:flex-end;text-align:right}
+  .gm-row{grid-template-columns:minmax(0,1fr) minmax(16rem,1.2fr) minmax(0,1fr);gap:2rem;padding:1.75rem 0}
+  .gm-lacks{text-align:right}
+}
+@media (max-width:767px){
+  .gm-link{gap:.625rem}
+  .gm-line:last-child{display:none}
+  .gm-line{flex:0 0 1.5rem}
 }
 .gm-answer{
-  margin-top:1.75rem;text-wrap:balance;font-family:var(--font-head);font-size:clamp(1.125rem,2.6vw,1.5rem);font-weight:800;
-  letter-spacing:-.01em;line-height:1.35;max-width:36rem;
+  margin-top:2.25rem;font-family:var(--font-head);font-size:clamp(1.125rem,2.4vw,1.375rem);font-weight:700;
+  letter-spacing:-.01em;line-height:1.4;max-width:34rem;text-wrap:balance;
 }
-@media (prefers-reduced-motion:reduce){
-  .gm-line::after,.gm-bridge{transition:none}
-}
+@media (prefers-reduced-motion:reduce){ .gm-line::after,.gm-bridge{transition:none} }
 
 /* 3 · ukázka lekce: body vlevo, video na výšku vpravo */
 /* text vlevo (2/3), video v pravé třetině; nadpis zůstává ve svém sloupci */
@@ -535,23 +513,20 @@ a{color:inherit}
       <h2 id="s2-h">Dobrý kandidát nemusí umět ukázat, <span class="accent-mint">co v něm je.</span></h2>
 
       <div class="gapmap" id="gapmap">
-        <div class="gm-head" aria-hidden="true">
-          <span>Co člověk má</span><span></span><span>Co mu chybí</span>
-        </div>
         <ol class="gm-rows">
           <li class="gm-row" style="--i:0">
             <span class="gm-has">Zkušenosti má.</span>
-            <span class="gm-link"><i class="gm-line"></i><span class="gm-bridge"><b>Jinde</b> naučí je pojmenovat</span></span>
+            <span class="gm-link"><i class="gm-line"></i><span class="gm-bridge"><b>Jinde</b> naučí je pojmenovat</span><i class="gm-line"></i></span>
             <span class="gm-lacks">Neumí je představit.</span>
           </li>
           <li class="gm-row" style="--i:1">
             <span class="gm-has">Chce změnu.</span>
-            <span class="gm-link"><i class="gm-line"></i><span class="gm-bridge"><b>Jinde</b> ukáže první krok</span></span>
+            <span class="gm-link"><i class="gm-line"></i><span class="gm-bridge"><b>Jinde</b> ukáže první krok</span><i class="gm-line"></i></span>
             <span class="gm-lacks">Neví, kde začít.</span>
           </li>
           <li class="gm-row" style="--i:2">
             <span class="gm-has">Nastupuje do práce.</span>
-            <span class="gm-link"><i class="gm-line"></i><span class="gm-bridge"><b>Jinde</b> připraví na nástup</span></span>
+            <span class="gm-link"><i class="gm-line"></i><span class="gm-bridge"><b>Jinde</b> připraví na nástup</span><i class="gm-line"></i></span>
             <span class="gm-lacks">Neví, jak se připravit.</span>
           </li>
         </ol>
