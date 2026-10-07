@@ -295,18 +295,19 @@ a{color:inherit}
 .closing .lead{margin-inline:auto}
 /* 8 · e-mail z prezentace (mailto, bez serveru) */
 .mail{
-  display:flex;align-items:flex-end;gap:.5rem;max-width:34rem;margin:2rem auto 0;
-  background:#fff;border:1px solid var(--line);border-radius:1.5rem;padding:.5rem .5rem .5rem 1.25rem;
+  display:flex;align-items:center;gap:.5rem;max-width:36rem;margin:2rem auto 0;
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:.5rem .5rem .5rem 1.25rem;
   box-shadow:0 20px 50px -24px rgba(15,23,42,.25);text-align:left;
   transition:border-color .2s ease,box-shadow .2s ease;
 }
 .mail:focus-within{border-color:var(--mint);box-shadow:0 0 0 4px rgba(65,177,122,.15),0 20px 50px -24px rgba(15,23,42,.25)}
-.mail textarea{
-  flex:1;min-width:0;border:0;outline:0;resize:none;background:transparent;
-  font:inherit;font-size:.9375rem;line-height:1.5;color:var(--indigo);padding:.55rem 0;
-  min-height:2.6rem;max-height:9rem;field-sizing:content;
+.mail input{
+  flex:1;min-width:0;border:0;outline:0;background:transparent;
+  font:inherit;font-size:.9375rem;color:var(--indigo);padding:.55rem 0;
 }
-.mail textarea::placeholder{color:var(--ink-45)}
+.mail input::placeholder{color:var(--ink-45)}
+.mail.invalid{border-color:#E0605B;box-shadow:0 0 0 4px rgba(224,96,91,.15)}
+.mail-note.error{color:#C2453F;font-weight:600}
 .mail button{
   flex:none;display:inline-flex;align-items:center;gap:.5rem;border:0;cursor:pointer;
   background:var(--mint);color:#fff;border-radius:999px;padding:.75rem 1.25rem;
@@ -778,12 +779,12 @@ html.paged{scroll-snap-type:none}
     <div class="slide-inner">
       <h2 class="big" id="s8-h">Váš příští kolega může právě teď dělat svůj <span style="color:var(--mint)">první krok v Jinde</span>.</h2>
       <p class="lead">Pomozte nám přivést do Edu další lidi.<br><strong style="color:var(--indigo)">Staňte se partnerem Jinde.</strong></p>
-      <form class="mail" id="mail-form">
-        <label class="visually-hidden" for="mail-msg">Vaše zpráva pro Jinde</label>
-        <textarea id="mail-msg" name="zprava" rows="1" placeholder="Napište nám pár slov, třeba který balíček vás zajímá."></textarea>
-        <button type="submit">Poslat e-mail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <form class="mail" id="mail-form" novalidate>
+        <label class="visually-hidden" for="mail-to">E-mail, kam prezentaci poslat</label>
+        <input id="mail-to" name="email" type="email" inputmode="email" autocomplete="email" placeholder="vas@email.cz" required>
+        <button type="submit">Odeslat prezentaci na e-mail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       </form>
-      <p class="mail-note" id="mail-note" aria-live="polite">Otevře se váš e-mail s předvyplněnou zprávou pro Jinu.</p>
+      <p class="mail-note" id="mail-note" aria-live="polite">Pošlete si odkaz na prezentaci, nebo ho rovnou předejte kolegovi.</p>
       <div class="presenter" style="display:flex;width:fit-content;margin-inline:auto">
         <img src="media/jina-expert.jpg" alt="" aria-hidden="true" width="120" height="120">
         <p><strong>Jina Malecová</strong>zakladatelka projektu</p>
@@ -1020,23 +1021,28 @@ document.addEventListener('keydown', e => {
 });
 setInterval(() => { if (locked && performance.now() - lockStart > 1400) locked = false; }, 400);  /* pojistka */
 
-/* e-mail z posledního snímku: statický web, takže mailto s předvyplněnou zprávou */
+/* poslední snímek: odeslání odkazu na prezentaci e-mailem (statický web, proto mailto) */
 (function(){
-  const CONTACT_EMAIL = ''; // TODO: doplnit adresu, kam mají zprávy chodit
   const form = document.getElementById('mail-form'); if (!form) return;
-  const msg = document.getElementById('mail-msg'), note = document.getElementById('mail-note');
+  const input = document.getElementById('mail-to'), note = document.getElementById('mail-note');
+  const NOTE = note.textContent;
   const firma = (new URLSearchParams(location.search).get('firma') || '').trim().slice(0, 28);
+  const link = location.origin + location.pathname + (firma ? '?firma=' + encodeURIComponent(firma) : '');
+  const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  function setNote(text, cls){ note.textContent = text; note.className = 'mail-note' + (cls ? ' ' + cls : ''); }
   form.addEventListener('submit', e => {
     e.preventDefault();
-    const subject = 'Partnerství Jinde' + (firma ? ' | ' + firma : '');
-    const body = (msg.value.trim() || 'Dobrý den, máme zájem o partnerství s Jinde. Ozvěte se nám prosím.') + '\n\n';
-    location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-    note.textContent = 'Děkujeme, zpráva je připravená ve vašem e-mailu.';
-    note.classList.add('sent');
+    const to = input.value.trim();
+    if (!isEmail(to)){
+      form.classList.add('invalid'); setNote('Zadejte prosím platný e-mail.', 'error'); input.focus(); return;
+    }
+    form.classList.remove('invalid');
+    const subject = 'Nabídka partnerství Jinde pro firmy v MSK';
+    const body = 'Dobrý den,\n\nposílám prezentaci Jinde: Nabídka partnerství pro firmy v Moravskoslezském kraji.\n\n' + link + '\n';
+    location.href = 'mailto:' + encodeURIComponent(to).replace(/%40/g, '@') + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    setNote('Hotovo, e-mail s odkazem je připravený k odeslání.', 'sent');
   });
-  msg.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) form.requestSubmit();
-  });
+  input.addEventListener('input', () => { if (form.classList.contains('invalid')){ form.classList.remove('invalid'); setNote(NOTE); } });
 })();
 </script>
 </body>
