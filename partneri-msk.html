@@ -527,13 +527,13 @@ a{color:inherit}
 .has-watermark{overflow:hidden}
 .watermark{
   position:absolute;inset:-25%;z-index:0;pointer-events:none;
-  background-image:var(--wm);background-size:300px 150px;
+  background-image:var(--wm);background-size:var(--wm-w,300px) var(--wm-h,150px);
   transform:rotate(-14deg);opacity:.11;
-  animation:wm-drift 60s linear infinite;
+  animation:wm-drift var(--wm-dur,60s) linear infinite;
   -webkit-mask-image:radial-gradient(ellipse at center,#000 35%,transparent 75%);
   mask-image:radial-gradient(ellipse at center,#000 35%,transparent 75%);
 }
-@keyframes wm-drift{to{background-position:300px 150px}}
+@keyframes wm-drift{to{background-position:var(--wm-w,300px) var(--wm-h,150px)}}
 .has-watermark .slide-inner{position:relative;z-index:1}
 .has-watermark .gain{background:rgba(255,255,255,.92);backdrop-filter:blur(6px)}
 @media (prefers-reduced-motion:reduce){ .watermark{animation:none} }
@@ -899,22 +899,56 @@ const WEEKS = [80, 170, 290, 460];
   } else run();
 })();
 
-/* ---------- vodoznak s logem partnera ----------
-   Výchozí text „Vaše logo". Odkaz s ?firma=Název ukáže jméno konkrétní firmy. */
+/* ---------- vodoznak s logy partnerů ----------
+   Bez parametru: mozaika 12 vymyšlených značek (každá jiný symbol i písmo).
+   S ?firma=Název: všude jméno konkrétní firmy. */
 (function(){
   const wm = document.getElementById('watermark'); if (!wm) return;
-  const raw = new URLSearchParams(location.search).get('firma');
-  const name = (raw && raw.trim().slice(0, 28)) || 'Vaše logo';
+  const C = '#1F2344';
   const esc = t => t.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150" viewBox="0 0 300 150">
-    <g fill="none" stroke="#1F2344" stroke-width="2">
-      <rect x="30" y="45" width="240" height="60" rx="14"/>
-      <rect x="44" y="59" width="32" height="32" rx="8" fill="#1F2344" stroke="none"/>
-    </g>
-    <path d="M53 81l7-9 5 6 4-4 6 7z" fill="#fff"/>
-    <text x="88" y="82" font-family="Plus Jakarta Sans, Arial, sans-serif" font-size="20" font-weight="800" fill="#1F2344">${esc(name)}</text>
-  </svg>`;
+  const raw = new URLSearchParams(location.search).get('firma');
+  let svg, w, h, dur;
+
+  if (raw && raw.trim()){
+    const name = esc(raw.trim().slice(0, 28));
+    w = 300; h = 150; dur = 60;
+    svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150" viewBox="0 0 300 150">
+      <g fill="none" stroke="${C}" stroke-width="2"><rect x="30" y="45" width="240" height="60" rx="14"/>
+      <rect x="44" y="59" width="32" height="32" rx="8" fill="${C}" stroke="none"/></g>
+      <path d="M53 81l7-9 5 6 4-4 6 7z" fill="#fff"/>
+      <text x="88" y="82" font-family="Plus Jakarta Sans, Arial, sans-serif" font-size="20" font-weight="800" fill="${C}">${name}</text></svg>`;
+  } else {
+    /* vymyšlené značky: symbol v poli 32×32 + slovní značka; žádná neodkazuje na skutečnou firmu */
+    const F = `fill="${C}"`, S = w => `fill="none" stroke="${C}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"`;
+    const LOGOS = [
+      {n:'Lumora',   f:'Georgia, serif',               s:26, wt:400, it:1, mark:`<path ${F} d="M20 3a13 13 0 1 0 9 22A11 11 0 1 1 20 3z"/>`},
+      {n:'FERRONIK', f:'Arial, sans-serif',            s:19, wt:800, ls:2, mark:`<polygon ${S(3)} points="16,2 29,9.5 29,22.5 16,30 3,22.5 3,9.5"/>`},
+      {n:'Kravita',  f:'Trebuchet MS, sans-serif',     s:24, wt:700, mark:`<path ${S(3)} d="M4 8l12 7 12-7M4 15l12 7 12-7M4 22l12 7 12-7"/>`},
+      {n:'novaplex', f:'Verdana, sans-serif',          s:21, wt:400, ls:1, mark:`<path ${F} d="M16 1l4 11 11 4-11 4-4 11-4-11-11-4 11-4z"/>`},
+      {n:'Beskyl',   f:'Georgia, serif',               s:25, wt:700, mark:`<path ${F} d="M1 28l10-18 6 10 5-7 9 15z"/>`},
+      {n:'ostriva',  f:'Courier New, monospace',       s:23, wt:700, mark:`<path ${S(2.6)} d="M2 11c4-4 8 4 12 0s8-4 12 0M2 18c4-4 8 4 12 0s8-4 12 0M2 25c4-4 8 4 12 0s8-4 12 0"/>`},
+      {n:'TAVEX',    f:'Arial Black, Arial, sans-serif', s:25, wt:900, ls:1, mark:`<path ${F} d="M16 1l15 15-15 15L1 16z"/>`},
+      {n:'Hutira',   f:'Verdana, sans-serif',          s:21, wt:700, mark:`<circle cx="16" cy="16" r="12" ${S(4)}/><circle cx="16" cy="16" r="4" ${F}/>`},
+      {n:'POLARKA',  f:'Georgia, serif',               s:18, wt:400, ls:3, mark:`<path ${S(3.4)} d="M16 2v28M4 9l24 14M4 23l24-14"/>`},
+      {n:'Zenkov',   f:'Trebuchet MS, sans-serif',     s:25, wt:600, it:1, mark:`<path ${F} d="M4 28C4 12 13 4 28 4c0 16-9 24-24 24z"/>`},
+      {n:'VEKTORA',  f:'Arial, sans-serif',            s:21, wt:700, ls:1, mark:`<path ${S(4)} d="M6 26L26 6M11 6h15v15"/>`},
+      {n:'Kalibra',  f:'Georgia, serif',               s:24, wt:600, it:1, mark:`<path ${S(3)} d="M3 29a26 26 0 0 1 26-26M10 29a19 19 0 0 1 19-19M17 29a12 12 0 0 1 12-12"/>`}
+    ];
+    const COLS = 4, CW = 300, CH = 150;
+    /* drobné posuny, ať mozaika nepůsobí jako mřížka (pevné, žádná náhoda při každém načtení) */
+    const JIT = [[-14,-8],[10,6],[-4,10],[16,-6],[6,-10],[-16,4],[12,8],[-8,-4],[2,12],[-12,-10],[14,2],[-6,8]];
+    w = COLS * CW; h = Math.ceil(LOGOS.length / COLS) * CH; dur = 220;
+    const cells = LOGOS.map((L, i) => {
+      const x = (i % COLS) * CW + 40 + JIT[i][0], y = Math.floor(i / COLS) * CH + 59 + JIT[i][1];
+      return `<g transform="translate(${x} ${y})">${L.mark}
+        <text x="44" y="24" font-family="${L.f}" font-size="${L.s}" font-weight="${L.wt}"${L.it ? ' font-style="italic"' : ''}${L.ls ? ` letter-spacing="${L.ls}"` : ''} fill="${C}">${L.n}</text></g>`;
+    }).join('');
+    svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${cells}</svg>`;
+  }
   wm.style.setProperty('--wm', `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}")`);
+  wm.style.setProperty('--wm-w', w + 'px');
+  wm.style.setProperty('--wm-h', h + 'px');
+  wm.style.setProperty('--wm-dur', dur + 's');
 })();
 
 /* ---------- ukázka lekce: přehraje se přímo ve snímku, se zvukem ---------- */
